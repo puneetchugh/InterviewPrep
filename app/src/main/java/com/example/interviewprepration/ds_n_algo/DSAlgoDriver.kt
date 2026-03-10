@@ -4,5 +4,6 @@ object DSAlgoDriver {
 
     fun driverFunction(){
         Boogle.driverFunction()
+        PreviousSmaller.driverFunction()
     }
 }
