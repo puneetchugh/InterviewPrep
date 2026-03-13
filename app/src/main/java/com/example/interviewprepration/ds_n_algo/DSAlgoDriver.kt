@@ -6,5 +6,6 @@ object DSAlgoDriver {
         Boogle.driverFunction()
         PreviousSmaller.driverFunction()
         Trie.driverFunction()
+        SnakesNLadders.driverFunction()
     }
 }
