@@ -2,7 +2,7 @@ package com.example.interviewprepration.ds_n_algo
 
 import android.util.Log
 
-data class Node(val distance: Int, val position: Int)
+data class Node(val distance: Int, val position: Int, val path: MutableList<Int>)
 
 object SnakesNLadders {
 
@@ -10,7 +10,12 @@ object SnakesNLadders {
 
     fun driverFunction() {
         val size = 30
-        val ladders = listOf(Pair(3, 22), Pair(4, 8), Pair(11, 26), Pair(20, 21))
+        val ladders = listOf(
+            Pair(3, 22),
+            Pair(4, 8),
+            Pair(11, 26),
+            Pair(20, 21)
+        )
         val snakes = listOf(
             Pair(27, 1),
             Pair(21, 9),
@@ -40,17 +45,22 @@ object SnakesNLadders {
             board[snake.first - 1] = snake.second - 1
         }
 
+        val initialList = mutableListOf<Int>()
+        initialList.add(0)
         val queue = ArrayDeque<Node>()
-        queue.add(Node(position = 0, distance = 0))
+        queue.add(Node(position = 0, distance = 0, path = initialList))
 
         while (queue.isNotEmpty()) {
-
             val visiting = queue.removeFirst()
             Log.e(
                 LOG_TAG,
-                "Shortest path: visiting, position: ${visiting.position}, distance: ${visiting.distance}"
+                "Shortest path: visiting, position: ${visiting.position}, distance: ${visiting.distance}, path: ${visiting.path}"
             )
             if (visiting.position == boardSize - 1) {
+                Log.e(
+                    LOG_TAG,
+                    "Found Shortest path: visiting, position: ${visiting.position}, distance: ${visiting.distance}, path: ${visiting.path}"
+                )
                 return visiting.distance
             }
 
@@ -61,7 +71,6 @@ object SnakesNLadders {
 
             for (i in 1..6) {
 
-
                 if (visiting.position + i >= boardSize) {
                     continue
                 }
@@ -71,7 +80,14 @@ object SnakesNLadders {
                 } else {
                     visiting.position + i
                 }
-                val node = Node(position = nextPosition, distance = visiting.distance + 1)
+                val visitingList = mutableListOf<Int>()
+                visitingList.addAll(visiting.path)
+                visitingList.add(nextPosition)
+                val node = Node(
+                    position = nextPosition,
+                    distance = visiting.distance + 1,
+                    path = visitingList
+                )
                 queue.add(node)
             }
         }
