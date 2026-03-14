@@ -6,7 +6,7 @@ data class Node(val distance: Int, val position: Int, val path: MutableList<Int>
 
 object SnakesNLadders {
 
-    val LOG_TAG = SnakesNLadders::class.java.name
+    val LOG_TAG: String = SnakesNLadders::class.java.name
 
     fun driverFunction() {
         val size = 30

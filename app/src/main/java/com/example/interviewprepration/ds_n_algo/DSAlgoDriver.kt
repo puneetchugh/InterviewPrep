@@ -7,5 +7,6 @@ object DSAlgoDriver {
         PreviousSmaller.driverFunction()
         Trie.driverFunction()
         SnakesNLadders.driverFunction()
+        BST.driverFunction()
     }
 }
