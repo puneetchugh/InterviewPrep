@@ -8,5 +8,6 @@ object DSAlgoDriver {
         Trie.driverFunction()
         SnakesNLadders.driverFunction()
         BST.driverFunction()
+        FindingTriplets.driverFunction()
     }
 }
