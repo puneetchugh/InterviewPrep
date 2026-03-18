@@ -18,6 +18,8 @@ object SlidingWindow {
                 )
             }"
         )
+
+        allPermutations()
     }
 
     //Find the longest substring of a string containing k distinct characters
@@ -53,11 +55,47 @@ object SlidingWindow {
             )
 
             if (longest.length < end - start + 1) {
-                longest = input.substring(start, end+1)
+                longest = input.substring(start, end + 1)
             }
             end++
         }
         return longest
+    }
+
+    //List all permutations of a string
+    fun allPermutations() {
+
+        val input = "abc"
+        val outputList = mutableListOf<String>()
+        allPermutations(
+            input = input,
+            remaining = input,
+            output = "",
+            list = outputList
+        )
+        Log.e(LOG_TAG, "Inside allPermutations: $outputList")
+    }
+
+    fun allPermutations(
+        input: String,
+        remaining: String,
+        output: String,
+        list: MutableList<String>
+    ) {
+
+        if (remaining.isBlank()) {
+            list.add(output)
+            return
+        }
+
+        for ((index, eachChar) in remaining.withIndex()) {
+            allPermutations(
+                input = input,
+                remaining = remaining.removeRange(index, index + 1),
+                output = output + eachChar,
+                list = list
+            )
+        }
     }
 
 }
