@@ -10,5 +10,6 @@ object DSAlgoDriver {
         BST.driverFunction()
         FindingTriplets.driverFunction()
         SlidingWindow.driverFunction()
+        WebScrapping.driverFunction()
     }
 }
