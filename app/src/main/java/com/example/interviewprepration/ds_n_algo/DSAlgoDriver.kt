@@ -12,5 +12,6 @@ object DSAlgoDriver {
         SlidingWindow.driverFunction()
         WebScrapping.driverFunction()
         LRU.driverFunction()
+        Search.driverFunction()
     }
 }
