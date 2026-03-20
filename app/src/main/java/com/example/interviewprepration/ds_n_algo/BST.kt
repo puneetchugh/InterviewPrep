@@ -6,10 +6,17 @@ object BST {
 
     val LOG_TAG: String = BST::class.java.name
 
-    data class Node(val data: Int, var left: Node? = null, var right: Node? = null)
+    data class Node(var data: Int, var left: Node? = null, var right: Node? = null)
+
 
     fun driverFunction() {
 
+        spiralPrint(root = sampleBST())
+        val root = sampleBST()
+        sumOfAllGreater(root = root)
+    }
+
+    fun sampleBST(): Node {
         val root = Node(data = 20)
         val nodeA = Node(data = 10)
         val nodeB = Node(data = 32)
@@ -32,8 +39,7 @@ object BST {
         nodeC.right = nodeG
 
         nodeD.right = nodeF
-
-        spiralPrint(root)
+        return root
     }
 
     fun spiralPrint(root: Node?) {
@@ -73,5 +79,35 @@ object BST {
             }
             leftToRight = !leftToRight
         }
+    }
+
+    //Update every key in a BST to contain the sum of all greater keys
+    fun sumOfAllGreater(root: Node) {
+        Log.e(LOG_TAG, "Inside sumOfAllGreater: original inOrder: ")
+        inOrder(root)
+        reverseInorder(root)
+        Log.e(LOG_TAG, "Inside sumOfAllGreater: updated inOrder: ")
+        inOrder(root)
+    }
+
+    var sum = 0
+
+    fun reverseInorder(root: Node?) {
+        if (root == null)
+            return
+        reverseInorder(root.right)
+        root.data += sum
+        sum = root.data
+        reverseInorder(root.left)
+
+    }
+
+    fun inOrder(root: Node?) {
+        if(root==null)
+            return
+        inOrder(root.left)
+        Log.e(LOG_TAG, "inOrder: ${root.data}")
+        inOrder(root.right)
+
     }
 }
