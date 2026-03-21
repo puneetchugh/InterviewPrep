@@ -13,5 +13,6 @@ object DSAlgoDriver {
         WebScrapping.driverFunction()
         LRU.driverFunction()
         Search.driverFunction()
+        CreateBT.driverFunction()
     }
 }
