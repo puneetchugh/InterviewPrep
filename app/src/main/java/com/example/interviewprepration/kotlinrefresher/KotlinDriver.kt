@@ -2,8 +2,9 @@ package com.example.interviewprepration.kotlinrefresher
 
 object KotlinDriver {
 
-    fun driverFunction(){
+    fun driverFunction() {
         LambdaFunctions.driverFunction()
         CollectionFunctions.driverFunction()
+        Coroutines.driverFunction()
     }
 }
