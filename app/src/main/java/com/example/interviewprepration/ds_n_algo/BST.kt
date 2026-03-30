@@ -1,6 +1,7 @@
 package com.example.interviewprepration.ds_n_algo
 
 import android.util.Log
+import kotlin.collections.ArrayDeque
 
 object BST {
 
@@ -14,6 +15,12 @@ object BST {
         spiralPrint(root = sampleBST())
         val root = sampleBST()
         sumOfAllGreater(root = root)
+
+        val root1 = sampleBST()
+        levelOrderTraversal(root1)
+
+        invertBT(root1)
+        levelOrderTraversal(root1)
     }
 
     fun sampleBST(): Node {
@@ -103,11 +110,63 @@ object BST {
     }
 
     fun inOrder(root: Node?) {
-        if(root==null)
+        if (root == null)
             return
         inOrder(root.left)
         Log.e(LOG_TAG, "inOrder: ${root.data}")
         inOrder(root.right)
 
     }
+
+    fun levelOrderTraversal(node: Node?) {
+        if (node == null)
+            return
+
+        val queue = ArrayDeque<Node>()
+        queue.add(node)
+        var level = 0
+
+        while (!queue.isEmpty()) {
+            var levelSize = queue.size
+            Log.e(LOG_TAG, "levelOrderTraversal: Level: $level, levelSize: $levelSize")
+            while (levelSize > 0) {
+                val current = queue.removeFirst()
+                Log.e(LOG_TAG, "levelOrderTraversal: ${current.data}")
+                current.left?.let {
+                    queue.add(it)
+                }
+                current.right?.let {
+                    queue.add(it)
+                }
+                levelSize--
+            }
+            level++
+        }
+    }
+
+    fun invertBT(root: Node?) {
+
+        if (root == null) {
+            return
+        }
+        val queue = ArrayDeque<Node>()
+        queue.add(root)
+
+        while (!queue.isEmpty()) {
+
+            val current = queue.removeFirst()
+            val temp = current.left
+            current.left = current.right
+            current.right = temp
+
+            current.left?.let {
+                queue.addLast(it)
+            }
+
+            current.right?.let {
+                queue.addLast(it)
+            }
+        }
+    }
+
 }
