@@ -21,6 +21,9 @@ object BST {
 
         invertBT(root1)
         levelOrderTraversal(root1)
+
+        val isBST = checkPreOrderForBST(arrayOf(10,5,2,8,20,15))
+        Log.e(LOG_TAG, "Inside driverFunction: isBST for given Pre-order: $isBST")
     }
 
     fun sampleBST(): Node {
@@ -118,6 +121,22 @@ object BST {
 
     }
 
+    fun preOrder(root: Node?) {
+        if (root == null)
+            return
+        Log.e(LOG_TAG, "preOrder: ${root.data}")
+        preOrder(root.left)
+        preOrder(root.right)
+    }
+
+    fun preOrderStorage(root: Node?, list: MutableList<Int>) {
+        if (root == null)
+            return
+        list.add(root.data)
+        preOrderStorage(root.left, list)
+        preOrderStorage(root.right, list)
+    }
+
     fun levelOrderTraversal(node: Node?) {
         if (node == null)
             return
@@ -167,6 +186,41 @@ object BST {
                 queue.addLast(it)
             }
         }
+    }
+
+    //Check if sequence is for Pre-order of BST
+    fun checkPreOrderForBST(preOrder: Array<Int>): Boolean {
+
+        val newBinaryTreeRoot = createBSTFromPreOrder(0, preOrder.size-1, preOrder)
+        val preOrderTraversal = mutableListOf<Int>()
+        preOrderStorage(newBinaryTreeRoot, preOrderTraversal)
+
+        Log.e(LOG_TAG, "Pre-order traversal array original: ${preOrder.contentToString()}")
+
+        Log.e(LOG_TAG, "Pre-order traversal of new binary tree: ${preOrderTraversal.joinToString()}")
+
+        val arrayEquals = preOrder.contentEquals(preOrderTraversal.toTypedArray())
+
+        return arrayEquals
+    }
+
+
+    //Create BST from Pre-order
+    fun createBSTFromPreOrder(left: Int, right: Int, preOrder: Array<Int>): Node? {
+
+        if (left > right)
+            return null
+
+        Log.e(LOG_TAG, "Inside createBSTFromPreOrder() Pre-order, left: $left, right: $right, currentNode: ${preOrder[left]}")
+        val current = Node(data = preOrder[left])
+        var counter = left + 1
+        while (counter <= right && preOrder[counter] < current.data) {
+            counter++
+        }
+        current.left = createBSTFromPreOrder(left + 1, counter - 1, preOrder)
+        current.right = createBSTFromPreOrder(counter, right, preOrder)
+
+        return current
     }
 
 }
