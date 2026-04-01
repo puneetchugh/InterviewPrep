@@ -1,6 +1,7 @@
 package com.example.interviewprepration.ds_n_algo
 
 import android.util.Log
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.collections.ArrayDeque
 
 object BST {
@@ -26,6 +27,11 @@ object BST {
         Log.e(LOG_TAG, "Inside driverFunction: isBST for given Pre-order: $isBST")
 
         createDLL()
+
+        createBTFromInOrderPreOrder(
+            inOrder = arrayOf(2, 5, 8, 10, 20, 30),
+            preOrder = arrayOf(10, 5, 2, 8, 20, 30)
+        )
     }
 
     fun sampleBST(): Node {
@@ -114,7 +120,7 @@ object BST {
 
     }
 
-    fun inOrder(root: Node?, tag: String="") {
+    fun inOrder(root: Node?, tag: String = "") {
         if (root == null)
             return
         inOrder(root = root.left, tag = tag)
@@ -237,22 +243,63 @@ object BST {
         inOrder(root = rootBST, tag = "createDLL()")
         var newDLLRoot = createDLLHelper(rootBST, next = null)
         Log.e(LOG_TAG, "Inside createDLL(), Printing the Doubly Linked List")
-        while(newDLLRoot!=null){
+        while (newDLLRoot != null) {
             Log.e(LOG_TAG, "Inside createDLL(), current node: ${newDLLRoot.data}")
             newDLLRoot = newDLLRoot.right
         }
     }
 
     fun createDLLHelper(current: Node?, next: Node?): Node? {
-        if(current==null)
+        if (current == null)
             return next
 
         var nextNode = createDLLHelper(current = current.right, next = next)
 
-        if(nextNode!=null){
+        if (nextNode != null) {
             nextNode.left = current
         }
         current.right = nextNode
         return createDLLHelper(current = current.left, next = current)
+    }
+
+    //Create a BT from InOrder and PreOrder
+    fun createBTFromInOrderPreOrder(inOrder: Array<Int>, preOrder: Array<Int>) {
+
+        val root = createBTFromInOrderPreOrderHelper(
+            inOrderMap = inOrder.withIndex().associate { (index, item) -> item to index },
+            preOrder = preOrder,
+            start = 0,
+            end = inOrder.size - 1,
+            preOrderIndex = AtomicInteger(0)
+        )
+
+        inOrder(root = root, "createBTFromInOrderPreOrder()")
+    }
+
+    fun createBTFromInOrderPreOrderHelper(
+        inOrderMap: Map<Int, Int>,
+        preOrder: Array<Int>,
+        start: Int,
+        end: Int,
+        preOrderIndex: AtomicInteger
+    ): Node? {
+        if (start > end || preOrderIndex.get() >= preOrder.size)
+            return null
+
+        val node = Node(data = preOrder[preOrderIndex.get()])
+        val index = inOrderMap[node.data]!!
+        preOrderIndex.andIncrement
+        node.left = createBTFromInOrderPreOrderHelper(
+            inOrderMap = inOrderMap,
+            preOrder = preOrder, start = start, end = index - 1,
+            preOrderIndex = preOrderIndex
+        )
+        node.right = createBTFromInOrderPreOrderHelper(
+            inOrderMap = inOrderMap,
+            preOrder = preOrder, start = index + 1, end = end,
+            preOrderIndex = preOrderIndex
+        )
+
+        return node
     }
 }
