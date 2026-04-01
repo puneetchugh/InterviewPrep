@@ -8,7 +8,7 @@ object BST {
     val LOG_TAG: String = BST::class.java.name
 
     data class Node(var data: Int, var left: Node? = null, var right: Node? = null)
-
+    data class DLLNode(var data: Int, var prev: Node? = null, var next: Node? = null)
 
     fun driverFunction() {
 
@@ -22,8 +22,10 @@ object BST {
         invertBT(root1)
         levelOrderTraversal(root1)
 
-        val isBST = checkPreOrderForBST(arrayOf(10,5,2,8,20,15))
+        val isBST = checkPreOrderForBST(arrayOf(10, 5, 2, 8, 20, 15))
         Log.e(LOG_TAG, "Inside driverFunction: isBST for given Pre-order: $isBST")
+
+        createDLL()
     }
 
     fun sampleBST(): Node {
@@ -112,13 +114,12 @@ object BST {
 
     }
 
-    fun inOrder(root: Node?) {
+    fun inOrder(root: Node?, tag: String="") {
         if (root == null)
             return
-        inOrder(root.left)
-        Log.e(LOG_TAG, "inOrder: ${root.data}")
-        inOrder(root.right)
-
+        inOrder(root = root.left, tag = tag)
+        Log.e(LOG_TAG, "$tag inOrder: ${root.data}")
+        inOrder(root = root.right, tag = tag)
     }
 
     fun preOrder(root: Node?) {
@@ -191,13 +192,16 @@ object BST {
     //Check if sequence is for Pre-order of BST
     fun checkPreOrderForBST(preOrder: Array<Int>): Boolean {
 
-        val newBinaryTreeRoot = createBSTFromPreOrder(0, preOrder.size-1, preOrder)
+        val newBinaryTreeRoot = createBSTFromPreOrder(0, preOrder.size - 1, preOrder)
         val preOrderTraversal = mutableListOf<Int>()
         preOrderStorage(newBinaryTreeRoot, preOrderTraversal)
 
         Log.e(LOG_TAG, "Pre-order traversal array original: ${preOrder.contentToString()}")
 
-        Log.e(LOG_TAG, "Pre-order traversal of new binary tree: ${preOrderTraversal.joinToString()}")
+        Log.e(
+            LOG_TAG,
+            "Pre-order traversal of new binary tree: ${preOrderTraversal.joinToString()}"
+        )
 
         val arrayEquals = preOrder.contentEquals(preOrderTraversal.toTypedArray())
 
@@ -211,7 +215,10 @@ object BST {
         if (left > right)
             return null
 
-        Log.e(LOG_TAG, "Inside createBSTFromPreOrder() Pre-order, left: $left, right: $right, currentNode: ${preOrder[left]}")
+        Log.e(
+            LOG_TAG,
+            "Inside createBSTFromPreOrder() Pre-order, left: $left, right: $right, currentNode: ${preOrder[left]}"
+        )
         val current = Node(data = preOrder[left])
         var counter = left + 1
         while (counter <= right && preOrder[counter] < current.data) {
@@ -223,4 +230,29 @@ object BST {
         return current
     }
 
+    // Create a sorted Doubly LinkedList from BST
+    fun createDLL() {
+        Log.e(LOG_TAG, "Inside createDLL()")
+        var rootBST = sampleBST()
+        inOrder(root = rootBST, tag = "createDLL()")
+        var newDLLRoot = createDLLHelper(rootBST, next = null)
+        Log.e(LOG_TAG, "Inside createDLL(), Printing the Doubly Linked List")
+        while(newDLLRoot!=null){
+            Log.e(LOG_TAG, "Inside createDLL(), current node: ${newDLLRoot.data}")
+            newDLLRoot = newDLLRoot.right
+        }
+    }
+
+    fun createDLLHelper(current: Node?, next: Node?): Node? {
+        if(current==null)
+            return next
+
+        var nextNode = createDLLHelper(current = current.right, next = next)
+
+        if(nextNode!=null){
+            nextNode.left = current
+        }
+        current.right = nextNode
+        return createDLLHelper(current = current.left, next = current)
+    }
 }
