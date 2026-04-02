@@ -1,11 +1,10 @@
 package com.example.interviewprepration.ds_n_algo
 
 import android.util.Log
-import kotlin.math.max
 
 object SlidingWindow {
 
-    val LOG_TAG = SlidingWindow::class.java.name
+    val LOG_TAG: String = SlidingWindow::class.java.name
     fun driverFunction() {
 
         val input = "abcbdbdbbdcdabd"
@@ -20,6 +19,25 @@ object SlidingWindow {
         )
 
         allPermutations()
+
+        val maxOnes = maxOnesSequence(input = arrayOf(0, 0, 1, 0, 1, 1, 1, 0, 1, 1))
+        Log.e(LOG_TAG, "Inside driverFunction, maxOnes: $maxOnes")
+
+        val maxOnesKZeros1 =
+            maxOnesSequenceKZeros1(array = arrayOf(1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0), k = 2)
+        Log.e(LOG_TAG, "Inside driverFunction, k = 2, maxOnesKZeros: $maxOnesKZeros1")
+
+        val maxOnesKZeros2 =
+            maxOnesSequenceKZeros2(array = arrayOf(1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0), k = 2)
+        Log.e(LOG_TAG, "Inside driverFunction, k = 2, maxOnesKZeros2: $maxOnesKZeros2")
+
+        val maxOnesKZeros11 =
+            maxOnesSequenceKZeros1(array = arrayOf(1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0), k = 1)
+        Log.e(LOG_TAG, "Inside driverFunction, k = 1, maxOnesKZeros11: $maxOnesKZeros11")
+
+        val maxOnesKZeros22 =
+            maxOnesSequenceKZeros2(array = arrayOf(1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0), k = 1)
+        Log.e(LOG_TAG, "Inside driverFunction, k = 1, maxOnesKZeros22: $maxOnesKZeros22")
     }
 
     //Find the longest substring of a string containing k distinct characters
@@ -98,4 +116,114 @@ object SlidingWindow {
         }
     }
 
+    //Find maximum length sequence of continuous ones
+    fun maxOnesSequence(input: Array<Int>): Int {
+        if (input.isEmpty())
+            return 0
+
+        var maxLength = 0
+        var start = 0
+
+        for ((index, item) in input.withIndex()) {
+            if (item == 1) {
+                if (index - start + 1 > maxLength) {
+                    maxLength = index - start + 1
+                }
+            } else {
+                if (index - start > maxLength) {
+                    maxLength = index - start
+                }
+                start = index + 1
+            }
+        }
+        return maxLength
+    }
+
+    // find maximum sequence of ones with given k zeros
+    fun maxOnesSequenceKZeros1(array: Array<Int>, k: Int): Int {
+        if (array.isEmpty()) {
+            return 0
+        }
+
+        var start = 0
+        var zerosCount = 0
+        var end = 0
+        var maxLength = 0
+
+        while (end < array.size) {
+            Log.e(
+                LOG_TAG,
+                "Inside maxOnesSequenceKZeros() while loop, current value: ${array[end]} start: $start, end: $end, zerosCount: $zerosCount, maxLength: $maxLength"
+            )
+            if (array[end] == 1) {
+                if (end - start + 1 > maxLength) {
+                    maxLength = end - start + 1
+                }
+            } else {
+                zerosCount++
+                while (zerosCount > k && start <= end) {
+                    if (array[start] == 0) {
+                        zerosCount--
+                    }
+                    start++
+                }
+                if (end - start + 1 > maxLength) {
+                    maxLength = end - start + 1
+                }
+            }
+            end++
+        }
+        return maxLength
+    }
+
+    // find maximum sequence of ones with given k zeros - clean code
+    fun maxOnesSequenceKZeros2(array: Array<Int>, k: Int): Int {
+        if (array.isEmpty()) {
+            return 0
+        }
+
+        var start = 0
+        var zerosCount = 0
+        var end = 0
+        var maxLength = 0
+
+        while (end < array.size) {
+            Log.e(
+                LOG_TAG,
+                "Inside maxOnesSequenceKZeros() while loop, current value: ${array[end]} start: $start, end: $end, zerosCount: $zerosCount, maxLength: $maxLength"
+            )
+
+            if (array[end] == 0) {
+                zerosCount++
+            }
+            while (zerosCount > k && start <= end) {
+                if (array[start] == 0) {
+                    zerosCount--
+                }
+                start++
+            }
+            if (end - start + 1 > maxLength) {
+                maxLength = end - start + 1
+            }
+            /*
+            if (array[end] == 1) {
+                if (end - start + 1 > maxLength) {
+                    maxLength = end - start + 1
+                }
+            } else {
+                zerosCount++
+                while (zerosCount > k && start <= end) {
+                    if (array[start] == 0) {
+                        zerosCount--
+                    }
+                    start++
+                }
+                if (end - start + 1 > maxLength) {
+                    maxLength = end - start + 1
+                }
+            }*/
+            end++
+        }
+        return maxLength
+    }
 }
