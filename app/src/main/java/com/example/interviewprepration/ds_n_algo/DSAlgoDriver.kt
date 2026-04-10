@@ -16,5 +16,6 @@ object DSAlgoDriver {
         CreateBT.driverFunction()
         Backtracking.driverFunction()
         Intervals.driverFunction()
+        LinkedList.driverFunction()
     }
 }
