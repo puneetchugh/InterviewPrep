@@ -38,6 +38,17 @@ object SlidingWindow {
         val maxOnesKZeros22 =
             maxOnesSequenceKZeros2(array = arrayOf(1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0), k = 1)
         Log.e(LOG_TAG, "Inside driverFunction, k = 1, maxOnesKZeros22: $maxOnesKZeros22")
+
+        val input1 = arrayOf(0, 5, -7, 1, -4, 7, 6, 1, 4, 1, 10)
+        val range = subArrayWithGivenSum1(array = input1, target = -3)
+        Log.e(
+            LinkedList.LOG_TAG,
+            "Inside driverFunction()->subArrayWithGivenSum(), range: $range for input: ${input1.contentToString()}, target: -3, array slice :${
+                input1.sliceArray(
+                    range!!
+                ).contentToString()
+            }"
+        )
     }
 
     //Find the longest substring of a string containing k distinct characters
@@ -225,5 +236,26 @@ object SlidingWindow {
             end++
         }
         return maxLength
+    }
+
+    fun subArrayWithGivenSum1(array: Array<Int>, target: Int): IntRange? {
+        var sumSoFar = 0
+        var high = 0
+        var map = mutableMapOf<Int, Int>()
+
+        for ((index, item) in array.withIndex()) {
+
+            sumSoFar += item
+            Log.e(
+                LinkedList.LOG_TAG,
+                "Inside subArrayWithGivenSum1(), index: $index, item: $item, sumSoFar: $sumSoFar, high: $high"
+            )
+            if (map.contains(sumSoFar - target)) {
+                return IntRange(start = (map[sumSoFar - target]!!).plus(1), endInclusive = index)
+            }
+            map[sumSoFar] = index
+            Log.e(LinkedList.LOG_TAG, "Inside subArrayWithGivenSum1(), map: $map")
+        }
+        return null
     }
 }
