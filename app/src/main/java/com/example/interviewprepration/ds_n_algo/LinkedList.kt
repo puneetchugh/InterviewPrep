@@ -19,9 +19,6 @@ object LinkedList {
         Log.e(LOG_TAG, "Inside driverFunction(), middleNodeOdd: ${middleNodeOdd?.data}")
         Log.e(LOG_TAG, "Inside driverFunction(), middleNodeEven: ${middleNodeEven?.data}")
 
-        val startOdd = deleteMiddleNode(oddCountNode())
-        val startEvent = deleteMiddleNode(evenCountNode())
-
     }
 
     fun oddCountNode(): LLNode? {
@@ -79,50 +76,5 @@ object LinkedList {
             slowPtr = slowPtr?.next
         }
         return slowPtr
-    }
-
-    fun findMiddleParent(start: LLNode?): Pair<LLNode?, LLNode?> {
-        if (start == null)
-            return Pair(null, null)
-
-        var slowPtr = start
-        var fastPtr = start
-        var prevPtr = start
-
-        while (fastPtr != null && fastPtr.next != null) {
-            prevPtr = slowPtr
-
-            fastPtr = fastPtr.next?.next
-            slowPtr = slowPtr?.next
-        }
-        return Pair(slowPtr, prevPtr)
-    }
-
-    fun deleteMiddleNode(start: LLNode?): LLNode? {
-        val parent = findMiddleParent(start)
-        if (parent.first == null && parent.second == null)
-            return null
-
-        Log.e(
-            LOG_TAG,
-            "Inside deleteMiddleNode(), middle: ${parent.first?.data}, parent of middle: ${parent.second?.data}"
-        )
-        var newStart = start
-        if (parent.first == parent.second) {
-            if (parent.first?.next != null) {
-                newStart = parent.first!!.next
-            }
-        } else {
-            parent.second?.next = parent.second?.next?.next
-        }
-
-        Log.e(LOG_TAG, "Inside deleteMiddleNode(), printing nodes")
-
-        var temp = newStart
-        while (temp != null) {
-            Log.e(LOG_TAG, "Inside deleteMiddleNode(), node: ${temp.data}")
-            temp = temp.next
-        }
-        return newStart
     }
 }
