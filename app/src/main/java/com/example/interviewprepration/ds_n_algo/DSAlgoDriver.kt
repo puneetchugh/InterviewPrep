@@ -17,5 +17,6 @@ object DSAlgoDriver {
         Backtracking.driverFunction()
         Intervals.driverFunction()
         LinkedList.driverFunction()
+        DFS_BFS.driverFunction()
     }
 }
