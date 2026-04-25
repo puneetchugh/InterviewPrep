@@ -19,6 +19,12 @@ object LinkedList {
         Log.e(LOG_TAG, "Inside driverFunction(), middleNodeOdd: ${middleNodeOdd?.data}")
         Log.e(LOG_TAG, "Inside driverFunction(), middleNodeEven: ${middleNodeEven?.data}")
 
+
+        val oddTotalNodes1 = oddCountNode()
+        val evenTotalNodes1 = evenCountNode()
+        val newOddTotalNodes = moveEvenNodes(oddTotalNodes1)
+        val newEvenTotalNodes = moveEvenNodes(evenTotalNodes1)
+
     }
 
     fun oddCountNode(): LLNode? {
@@ -39,7 +45,7 @@ object LinkedList {
     fun evenCountNode(): LLNode? {
         val node1 = LLNode(data = 10)
         val node2 = LLNode(data = 4)
-        val node3 = LLNode(data = 88)
+        val node3 = LLNode(data = 99)
         val node4 = LLNode(data = 7)
         val node5 = LLNode(data = 11)
         val node6 = LLNode(data = 22)
@@ -76,5 +82,46 @@ object LinkedList {
             slowPtr = slowPtr?.next
         }
         return slowPtr
+    }
+
+    //Move even nodes to the end of the linked list in reverse order
+    // Input:  1 —> 2 —> 3 —> 4 —> 5 —> 6 —> 7 —> null
+    // Output: 1 —> 3 —> 5 —> 7 —> 6 —> 4 —> 2 —> null
+    fun moveEvenNodes(head: LLNode?): LLNode? {
+        if (head == null)
+            return null
+
+        var temp = head
+        var evenHead: LLNode? = null
+        var prev = head
+        var newHead: LLNode? = null
+
+        while (temp?.next != null) {
+            Log.e(LOG_TAG, "Inside moveEvenNodes(), original LL, current node: ${temp.data}")
+            if ((temp.data) % 2 == 0) {
+                var evenNode = temp
+                temp = temp.next
+                evenNode.next = evenHead
+                evenHead = evenNode
+            } else {
+                if (newHead == null) {
+                    newHead = temp
+                }
+                prev = temp
+                temp = temp.next
+            }
+        }
+
+        temp?.next = evenHead
+        if (newHead == null) {
+            newHead = temp
+        }
+
+        var temp1 = newHead
+        while (temp1 != null) {
+            Log.e(LOG_TAG, "Inside moveEvenNodes(), new LL current node: ${temp1.data}")
+            temp1 = temp1.next
+        }
+        return newHead
     }
 }
