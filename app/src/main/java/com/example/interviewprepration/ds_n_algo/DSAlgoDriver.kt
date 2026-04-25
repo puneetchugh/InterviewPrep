@@ -18,5 +18,6 @@ object DSAlgoDriver {
         Intervals.driverFunction()
         LinkedList.driverFunction()
         DFS_BFS.driverFunction()
+        LFU.driverFunction()
     }
 }
