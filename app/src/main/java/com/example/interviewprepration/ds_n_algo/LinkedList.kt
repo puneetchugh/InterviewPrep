@@ -22,9 +22,10 @@ object LinkedList {
 
         val oddTotalNodes1 = oddCountNode()
         val evenTotalNodes1 = evenCountNode()
+        val allEvenNodes = allEvenNodes()
         val newOddTotalNodes = moveEvenNodes(oddTotalNodes1)
         val newEvenTotalNodes = moveEvenNodes(evenTotalNodes1)
-
+        val newAllEvenNodes = moveEvenNodes(allEvenNodes)
     }
 
     fun oddCountNode(): LLNode? {
@@ -58,6 +59,24 @@ object LinkedList {
 
         return node1
     }
+
+    fun allEvenNodes(): LLNode? {
+        val node1 = LLNode(data = 20)
+        val node2 = LLNode(data = 44)
+        val node3 = LLNode(data = 88)
+        val node4 = LLNode(data = 70)
+        val node5 = LLNode(data = 10)
+        val node6 = LLNode(data = 22)
+
+        node1.next = node2
+        node2.next = node3
+        node3.next = node4
+        node4.next = node5
+        node5.next = node6
+
+        return node1
+    }
+
 
 
     fun findMiddle(root: LLNode?): LLNode? {
