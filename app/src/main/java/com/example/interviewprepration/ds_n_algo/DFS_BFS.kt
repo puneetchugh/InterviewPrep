@@ -12,8 +12,24 @@ object DFS_BFS {
 
         val inputArray = createInputArray()
         longestPath(array = inputArray, start = Pair(0, 0), target = Pair(4, 4))
+
+        val size = 30
+        val ladders = listOf(
+            Pair(3, 22),
+            Pair(4, 8),
+            Pair(11, 26),
+            Pair(20, 21)
+        )
+        val snakes = listOf(
+            Pair(27, 1),
+            Pair(21, 9),
+            Pair(17, 4),
+            Pair(19, 7)
+        )
+        snakesNLadders(size, snakes.toTypedArray(), ladders.toTypedArray())
     }
 
+    // longest path
     fun visitedArray(rows: Int, cols: Int): Array<BooleanArray> {
         return Array(rows) { BooleanArray(size = cols) }
     }
@@ -57,7 +73,10 @@ object DFS_BFS {
             )
             return max(longest, currentLength)
         }
-        Log.e(LOG_TAG, "Inside longestPathHelper(), current: $current, target: $target, current length: $currentLength")
+        Log.e(
+            LOG_TAG,
+            "Inside longestPathHelper(), current: $current, target: $target, current length: $currentLength"
+        )
         visited[current.first][current.second] = true
         val points = arrayOf(
             Pair(-1, -1),
@@ -98,5 +117,46 @@ object DFS_BFS {
 
     fun isValid(x: Int, y: Int, array: Array<IntArray>, visited: Array<BooleanArray>): Boolean {
         return x >= 0 && y >= 0 && x < array.size && y < array[0].size && array[x][y] == 1 && !visited[x][y]
+    }
+
+    // shortest path - Snakes and Ladders
+    data class Point(val point: Int, val moves: Int)
+
+    fun snakesNLadders(
+        size: Int,
+        snakes: Array<Pair<Int, Int>>,
+        ladders: Array<Pair<Int, Int>>
+    ) {
+        val board = Array(size) { -1 }
+        snakes.forEach { (key, value) -> board[key - 1] = value - 1 }
+        ladders.forEach { (key, value) -> board[key - 1] = value - 1 }
+
+        val queue = ArrayDeque<Point>()
+        queue.add(Point(point = 0, moves = 0))
+
+        while (!queue.isEmpty()) {
+            val visiting = queue.removeFirst()
+
+            if (visiting.point == size - 1) {
+                Log.e(LOG_TAG, "SnakesNLadders: shortest path: ${visiting.moves}")
+                break
+            }
+
+            for (counter in 0 until 6) {
+
+                if (visiting.point + counter >= size) {
+                    continue
+                }
+
+                val nextStep = if (board[visiting.point + counter] != -1) {
+                    board[visiting.point + counter]
+                } else {
+                    visiting.point + counter
+                }
+
+                val nextNode = Point(point = nextStep, moves = visiting.moves + 1)
+                queue.add(nextNode)
+            }
+        }
     }
 }
