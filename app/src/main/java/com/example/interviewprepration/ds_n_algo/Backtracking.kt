@@ -7,10 +7,14 @@ object Backtracking {
     val LOG_TAG: String = Backtracking::class.java.name
     fun driverFunction() {
         nQueensWrapper(size = 5)
+
+        allStringsPermutations(input = "abc")
+        allStringsPermutations(input = "abcd")
+        allStringsPermutations(input = "puneet")
     }
 
     /*****************************************************
-                N Queens Problem - Start
+    N Queens Problem - Start
      *****************************************************/
     //All valid placements of the n queens problem
     fun nQueensWrapper(size: Int) {
@@ -103,7 +107,31 @@ object Backtracking {
     fun isValid(array: Array<BooleanArray>, row: Int, col: Int): Boolean {
         return row >= 0 && row < array.size && col >= 0 && col < array[0].size
     }
+
     /*****************************************************
-                N Queens Problem - END
+      N Queens Problem - END
      *****************************************************/
+
+    fun allStringsPermutations(input: String) {
+        val output = mutableListOf<String>()
+
+        allStringsPermutationsHelper(remaining = input, output = "", list = output)
+        output.forEach {
+            Log.e(LOG_TAG, "Inside allStringsPermutations: $it, input: $input")
+        }
+    }
+
+    fun allStringsPermutationsHelper(remaining: String, output: String, list: MutableList<String>) {
+        if (remaining.isEmpty()) {
+            list.add(output)
+        }
+
+        for ((index, eachChar) in remaining.withIndex()) {
+            allStringsPermutationsHelper(
+                remaining = remaining.removeRange(index, index + 1),
+                output = output + eachChar,
+                list = list
+            )
+        }
+    }
 }
