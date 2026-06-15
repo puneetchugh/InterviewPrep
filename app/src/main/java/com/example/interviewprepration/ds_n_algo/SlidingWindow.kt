@@ -49,6 +49,10 @@ object SlidingWindow {
                 ).contentToString()
             }"
         )
+
+        val input2 = intArrayOf(10, 4, 2, 5, 6, 3, 8, 1)
+        val minSum = minSumSubArray(input = input2, k = 3)
+        Log.e(LOG_TAG, "Inside driverFunction(), minSumSubArray() minSum: $minSum")
     }
 
     //Find the longest substring of a string containing k distinct characters
@@ -257,5 +261,34 @@ object SlidingWindow {
             Log.e(LinkedList.LOG_TAG, "Inside subArrayWithGivenSum1(), map: $map")
         }
         return null
+    }
+
+    // Find minimum sum subarray of size `k`
+    fun minSumSubArray(input: IntArray, k: Int): Int? {
+
+        Log.e(LOG_TAG, "Inside minSumSubArray(), input: ${input.contentToString()}, k: $k")
+        var start: Int = 0
+        var end: Int = 0
+        var counter = k - 1
+
+        if (input.isEmpty() || input.size < k) {
+            return null
+        }
+
+        var minSum = Int.MAX_VALUE
+
+        while (counter < input.size) {
+            if (input.slice((counter - k + 1)..counter).sum() < minSum) {
+                minSum = input.slice((counter - k + 1)..counter).sum()
+                start = counter - k + 1
+                end = counter
+            }
+            counter++
+        }
+        Log.e(
+            LOG_TAG,
+            "Inside minSumSubArray(), minSum: $minSum, start: $start, end: $end"
+        )
+        return minSum
     }
 }
