@@ -1,6 +1,7 @@
 package com.example.interviewprepration.ds_n_algo
 
 import android.util.Log
+import com.example.interviewprepration.ds_n_algo.BST.NodeWrapper
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.collections.ArrayDeque
 
@@ -32,6 +33,10 @@ object BST {
             inOrder = arrayOf(2, 5, 8, 10, 20, 30),
             preOrder = arrayOf(10, 5, 2, 8, 20, 30)
         )
+
+        topView()
+        printBottomView()
+        leftView()
     }
 
     fun sampleBST(): Node {
@@ -301,5 +306,106 @@ object BST {
         )
 
         return node
+    }
+
+    // top view of BST - using level order traversal
+    fun topView() {
+
+        Log.e(LOG_TAG, "Inside topView()")
+        val root = sampleBST()
+
+        val queue = ArrayDeque<Pair<Node, Int>>()
+        queue.add(Pair(root, 0))
+
+        val horizontalMapping = mutableMapOf<Int, Node>()
+        var verticalLevel = 0
+        while (queue.isNotEmpty()) {
+            var nodeCount = queue.size
+
+            while (nodeCount > 0) {
+                val current = queue.removeFirst()
+
+                if (!horizontalMapping.containsKey(current.second)) {
+                    horizontalMapping[current.second] = current.first
+                }
+
+                current.first.left?.let {
+                    queue.add(Pair(it, current.second - 1))
+                }
+                current.first.right?.let {
+                    queue.add(Pair(it, current.second + 1))
+                }
+                nodeCount--
+            }
+            verticalLevel++
+        }
+
+        horizontalMapping.entries.forEach {
+            Log.e(LOG_TAG, "topView: ${it.key},${it.value.data}")
+        }
+    }
+
+    // bottom view using pre-prder traversal
+    data class NodeWrapper(val node: Node, val horizontalLevel: Int)
+
+    fun printBottomView() {
+        val root = sampleBST()
+
+        val mapping = mutableMapOf<Int, NodeWrapper>()
+
+        preOrderTraversal(root = root, map = mapping, level = 0, horizontalDistance = 0)
+
+        Log.e(LOG_TAG, "Inside printBottomView(), bottom view: ")
+        mapping.forEach {
+            Log.e(
+                LOG_TAG,
+                "printBottomView(): horizontalDist: ${it.key}, value: ${it.value.node.data}, level: ${it.value.horizontalLevel}"
+            )
+        }
+    }
+
+    fun preOrderTraversal(
+        root: Node?,
+        map: MutableMap<Int, NodeWrapper>,
+        level: Int,
+        horizontalDistance: Int
+    ) {
+        Log.e(
+            LOG_TAG,
+            "Inside printBottomView()->preOrderTraversal(), root: ${root?.data}, level: $level, horizontalDistance: $horizontalDistance"
+        )
+        if (root == null) {
+            return
+        }
+
+        if (map.containsKey(horizontalDistance)) {
+            if (map[horizontalDistance]!!.horizontalLevel <= level) {
+                map[horizontalDistance] = NodeWrapper(node = root, horizontalLevel = level)
+            }
+        } else {
+            map.put(horizontalDistance, NodeWrapper(node = root, horizontalLevel = level))
+        }
+
+        preOrderTraversal(root.left, map, level + 1, horizontalDistance - 1)
+        preOrderTraversal(root.right, map, level + 1, horizontalDistance + 1)
+    }
+
+    fun leftView() {
+        val root = sampleBST()
+
+        leftViewTraversal(root = root)
+    }
+
+    fun leftViewTraversal(root: BST.Node?) {
+        if (root == null) {
+            return
+        }
+
+        Log.e(LOG_TAG, "Left view, printing node: ${root.data}")
+        if (root.left != null) {
+            leftViewTraversal(root.left)
+        } else {
+            leftViewTraversal(root.right)
+        }
     }
 }
