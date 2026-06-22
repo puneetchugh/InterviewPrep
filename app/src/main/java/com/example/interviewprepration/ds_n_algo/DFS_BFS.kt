@@ -1,5 +1,6 @@
 package com.example.interviewprepration.ds_n_algo
 
+import android.opengl.Matrix
 import kotlin.math.max
 import android.util.Log
 
@@ -27,6 +28,9 @@ object DFS_BFS {
             Pair(19, 7)
         )
         snakesNLadders(size, snakes.toTypedArray(), ladders.toTypedArray())
+
+        replaceZerosSurroundedByOnes()
+        replaceZerosNotSurroundedByOnes()
     }
 
     // longest path
@@ -157,6 +161,152 @@ object DFS_BFS {
                 val nextNode = Point(point = nextStep, moves = visiting.moves + 1)
                 queue.add(nextNode)
             }
+        }
+    }
+
+    fun sampleArray() = arrayOf(
+        intArrayOf(1, 1, 1, 1, 0, 0, 1, 1, 0, 1),
+        intArrayOf(1, 0, 0, 1, 1, 0, 1, 1, 1, 1),
+        intArrayOf(1, 0, 0, 1, 1, 1, 1, 1, 1, 1),
+        intArrayOf(1, 1, 1, 1, 0, 0, 1, 1, 0, 1),
+        intArrayOf(0, 0, 1, 1, 0, 0, 0, 1, 0, 1),
+        intArrayOf(1, 0, 0, 1, 1, 0, 1, 1, 0, 0),
+        intArrayOf(1, 1, 0, 1, 1, 1, 1, 1, 1, 1),
+        intArrayOf(1, 1, 0, 1, 1, 0, 0, 1, 0, 1),
+        intArrayOf(1, 1, 1, 0, 1, 0, 1, 0, 0, 1),
+        intArrayOf(1, 1, 1, 0, 1, 1, 1, 1, 1, 1)
+    )
+
+    // Replace all occurrences of 0 that are surrounded by 1 in a binary matrix
+    fun replaceZerosSurroundedByOnes() {
+        val matrix = sampleArray()
+
+        Log.e(LOG_TAG, "Inside replaceZerosSurroundedByOnes, input matrix:")
+        matrix.forEach {
+            Log.e(
+                LOG_TAG,
+                "Inside replaceZerosSurroundedByOnes, input matrix: ${it.contentToString()}"
+            )
+        }
+
+        for (colCounter in matrix[0].indices) {
+            if (matrix[0][colCounter] == 0) {
+                replaceZerosSurroundedByOnesHelper(matrix, Pair(0, colCounter), -1)
+            }
+        }
+
+        for (colCounter in matrix[matrix.size - 1].indices) {
+            if (matrix[matrix.size - 1][colCounter] == 0) {
+                replaceZerosSurroundedByOnesHelper(matrix, Pair(matrix.size - 1, colCounter), -1)
+            }
+        }
+
+        for (rowCounter in 0 until matrix.size) {
+            if (matrix[rowCounter][0] == 0) {
+                replaceZerosSurroundedByOnesHelper(matrix, Pair(rowCounter, 0), -1)
+            }
+        }
+
+        for (rowCounter in 0 until matrix.size) {
+            if (matrix[rowCounter][matrix[0].size - 1] == 0) {
+                replaceZerosSurroundedByOnesHelper(matrix, Pair(rowCounter, matrix[0].size - 1), -1)
+            }
+        }
+
+        for (rowCounter in matrix.indices) {
+            for (colCounter in matrix[rowCounter].indices) {
+                if (matrix[rowCounter][colCounter] == 0) {
+                    matrix[rowCounter][colCounter] = 1
+                }
+            }
+        }
+
+        for (rowCounter in matrix.indices) {
+            for (colCounter in matrix[rowCounter].indices) {
+                if (matrix[rowCounter][colCounter] == -1) {
+                    matrix[rowCounter][colCounter] = 0
+                }
+            }
+        }
+
+        Log.e(LOG_TAG, "Inside replaceZerosSurroundedByOnes, output matrix:")
+        matrix.forEach {
+            Log.e(
+                LOG_TAG,
+                "Inside replaceZerosSurroundedByOnes, output matrix: ${it.contentToString()}"
+            )
+        }
+
+    }
+
+    fun replaceZerosSurroundedByOnesHelper(
+        matrix: Array<IntArray>,
+        point: Pair<Int, Int>,
+        replaceWith: Int
+    ) {
+
+        matrix[point.first][point.second] = replaceWith
+        val points = mutableListOf<Pair<Int, Int>>(Pair(1, 0), Pair(0, 1), Pair(-1, 0), Pair(0, -1))
+
+        for (currentPoint in points) {
+            if (isValid(
+                    matrix,
+                    Pair(point.first + currentPoint.first, point.second + currentPoint.second)
+                )
+            )
+                replaceZerosSurroundedByOnesHelper(
+                    matrix,
+                    Pair(point.first + currentPoint.first, point.second + currentPoint.second),
+                    replaceWith
+                )
+        }
+    }
+
+    fun isValid(matrix: Array<IntArray>, point: Pair<Int, Int>): Boolean {
+        return point.first >= 0 && point.second >= 0 && point.first < matrix.size && point.second < matrix[0].size && matrix[point.first][point.second] == 0
+    }
+
+    // Replace all occurrences of 0 that are NOT surrounded by 1 in a binary matrix
+    fun replaceZerosNotSurroundedByOnes() {
+        val matrix = sampleArray()
+
+        Log.e(LOG_TAG, "Inside replaceZerosNOTSurroundedByOnes, input matrix:")
+        matrix.forEach {
+            Log.e(
+                LOG_TAG,
+                "Inside replaceZerosNOTSurroundedByOnes, input matrix: ${it.contentToString()}"
+            )
+        }
+        for (colCounter in matrix[0].indices) {
+            if (isValid(matrix, Pair(0, colCounter))) {
+                replaceZerosSurroundedByOnesHelper(matrix, Pair(0, colCounter), 1)
+            }
+        }
+
+        for (colCounter in matrix[matrix.size - 1].indices) {
+            if (isValid(matrix, Pair(matrix.size - 1, colCounter))) {
+                replaceZerosSurroundedByOnesHelper(matrix, Pair(matrix.size - 1, colCounter), 1)
+            }
+        }
+
+        for (rowCounter in matrix.indices) {
+            if (isValid(matrix, Pair(rowCounter, 0))) {
+                replaceZerosSurroundedByOnesHelper(matrix, Pair(rowCounter, 0), 1)
+            }
+        }
+
+        for (rowCounter in matrix.indices) {
+            if (isValid(matrix, Pair(rowCounter, matrix[0].size - 1))) {
+                replaceZerosSurroundedByOnesHelper(matrix, Pair(rowCounter, matrix[0].size - 1), 1)
+            }
+        }
+
+        Log.e(LOG_TAG, "Inside replaceZerosNOTSurroundedByOnes, output matrix:")
+        matrix.forEach {
+            Log.e(
+                LOG_TAG,
+                "Inside replaceZerosNOTSurroundedByOnes, output matrix: ${it.contentToString()}"
+            )
         }
     }
 }
