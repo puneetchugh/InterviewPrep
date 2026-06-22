@@ -1,6 +1,7 @@
 package com.example.interviewprepration.ds_n_algo
 
 import android.util.Log
+import java.util.concurrent.atomic.AtomicInteger
 
 object CreateBT {
 
@@ -33,15 +34,17 @@ object CreateBT {
         )
 
         inOrder(root)
+
+        createBTFromInorderPreorder()
     }
 
-    fun inOrder(node: Node?) {
+    fun inOrder(node: Node?, tag: String? = "") {
         if (node == null)
             return
 
-        inOrder(node.left)
-        Log.e(LOG_TAG, "inOrder: ${node.data}")
-        inOrder(node.right)
+        inOrder(node.left, tag = tag)
+        Log.e(LOG_TAG, "inOrder, ${tag}: ${node.data}")
+        inOrder(node.right, tag = tag)
     }
 
     // Create BT from inOrder and levelOrder
@@ -83,6 +86,51 @@ object CreateBT {
             levelOrderMap = levelOrderMap,
             start = inOrderIndex + 1,
             end = end
+        )
+        return node
+    }
+
+    fun createBTFromInorderPreorder() {
+        val inOrder = arrayOf(4, 8, 10, 12, 14, 20, 22)
+        val inOrderMap = inOrder.withIndex().associate { (index, item) -> item to index }
+        val preOrder = arrayOf(20, 8, 4, 12, 10, 14, 22)
+        val root = createBTFromInorderPreorderHelper(
+            preOrder = preOrder,
+            inOrderMap = inOrderMap,
+            startInorder = 0,
+            endInorder = inOrder.size - 1,
+            index = AtomicInteger()
+        )
+        inOrder(root, tag = "createBTFromInorderPreorder")
+    }
+
+    fun createBTFromInorderPreorderHelper(
+        preOrder: Array<Int>,
+        inOrderMap: Map<Int, Int>,
+        startInorder: Int,
+        endInorder: Int,
+        index: AtomicInteger
+    ): Node? {
+
+        if (startInorder > endInorder)
+            return null
+
+        val node = Node(data = preOrder[index.get()])
+        index.andIncrement
+        node.left = createBTFromInorderPreorderHelper(
+            preOrder = preOrder,
+            inOrderMap = inOrderMap,
+            startInorder = startInorder,
+            endInorder = inOrderMap[node.data]!! - 1,
+            index = index
+        )
+
+        node.right = createBTFromInorderPreorderHelper(
+            preOrder = preOrder,
+            inOrderMap = inOrderMap,
+            startInorder = inOrderMap[node.data]!! + 1,
+            endInorder = endInorder,
+            index = index
         )
         return node
     }
