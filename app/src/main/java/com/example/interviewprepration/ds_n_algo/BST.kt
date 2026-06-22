@@ -1,7 +1,6 @@
 package com.example.interviewprepration.ds_n_algo
 
 import android.util.Log
-import com.example.interviewprepration.ds_n_algo.BST.NodeWrapper
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.collections.ArrayDeque
 
@@ -37,6 +36,8 @@ object BST {
         topView()
         printBottomView()
         leftView()
+        createBSTFromPreorder()
+        createBSTFromPostOrder()
     }
 
     fun sampleBST(): Node {
@@ -407,5 +408,65 @@ object BST {
         } else {
             leftViewTraversal(root.right)
         }
+    }
+
+    fun createBSTFromPreorder() {
+
+        val inputTraversal = intArrayOf(20, 10, 7, 15, 22, 30)
+        val root = createBSTFromPreorderHelper(
+            input = inputTraversal,
+            start = 0,
+            end = inputTraversal.size - 1
+        )
+        inOrder(root = root, tag = "createBSTFromPreorder")
+    }
+
+    fun createBSTFromPreorderHelper(input: IntArray, start: Int, end: Int): Node? {
+
+        if (start > end)
+            return null
+
+        val node = Node(data = input[start])
+
+        var counter = start + 1
+
+        while (counter < input.size && input[counter] < node.data) {
+            counter++
+        }
+        if (counter > start) {
+            node.left = createBSTFromPreorderHelper(input, start + 1, counter - 1)
+        }
+        if (counter <= end) {
+            node.right = createBSTFromPreorderHelper(input, counter, end)
+        }
+
+        return node
+    }
+
+    fun createBSTFromPostOrder(){
+        val postOrder = intArrayOf(7, 15, 10, 25, 30, 22, 20)
+        val root = createBSTFromPostOrderHelper(input = postOrder, start = 0, end = postOrder.size - 1)
+        inOrder(root = root, tag = "createBSTFromPostOrder")
+    }
+
+    fun createBSTFromPostOrderHelper(input: IntArray, start: Int, end: Int): Node? {
+        if (start > end)
+            return null
+
+        val node = Node(data = input[end])
+        var counter = end - 1
+
+        while (counter >= start && input[counter] > input[end]) {
+            counter--
+        }
+
+        if (counter < end) {
+            node.right = createBSTFromPostOrderHelper(input, counter + 1, end - 1)
+        }
+
+        if (counter >= start) {
+            node.left = createBSTFromPostOrderHelper(input, start, counter)
+        }
+        return node
     }
 }
