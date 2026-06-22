@@ -10,7 +10,9 @@ object Backtracking {
 
         allStringsPermutations(input = "abc")
         allStringsPermutations(input = "abcd")
-        allStringsPermutations(input = "puneet")
+        //allStringsPermutations(input = "puneet")
+
+        wordBreakProblem()
     }
 
     /*****************************************************
@@ -109,7 +111,7 @@ object Backtracking {
     }
 
     /*****************************************************
-      N Queens Problem - END
+    N Queens Problem - END
      *****************************************************/
 
     fun allStringsPermutations(input: String) {
@@ -133,5 +135,50 @@ object Backtracking {
                 list = list
             )
         }
+    }
+
+    fun wordBreakProblem() {
+        Log.e(LOG_TAG, "Inside wordBreakProblem()")
+        val inputWord = "pineapplepenapple"
+        val dictionary = arrayOf<String>("apple", "pen", "applepen", "pine", "pineapple")
+        val output = wordBreakProblemHelper(inputWord, dictionary, 0)
+        Log.e(LOG_TAG, "Inside wordBreakProblem, input: $inputWord output: $output")
+
+        val inputWord1 = "catsanddog"
+        val dictionary1 = arrayOf<String>("cats", "dog", "sand", "and", "cat")
+        val output1 = wordBreakProblemHelper(inputWord1, dictionary1, 0)
+        Log.e(LOG_TAG, "Inside wordBreakProblem, input: $inputWord1 output: $output1")
+    }
+
+    fun wordBreakProblemHelper(
+        inputWord: String,
+        dictionary: Array<String>,
+        index: Int
+    ): Boolean {
+
+        if (index == inputWord.length) {
+            return true
+        }
+
+        for (count in index + 1..inputWord.length) {
+            /*Log.e(
+                LOG_TAG,
+                "wordBreakProblemHelper(), index: $index, count: $count, checking substring ${
+                    inputWord.substring(
+                        index,
+                        count
+                    )
+                }, is in dictionary: ${inputWord.substring(index, count) in dictionary}"
+            )*/
+            if (inputWord.substring(index, count) in dictionary && wordBreakProblemHelper(
+                    inputWord,
+                    dictionary,
+                    count
+                )
+            ) {
+                return true
+            }
+        }
+        return false
     }
 }
