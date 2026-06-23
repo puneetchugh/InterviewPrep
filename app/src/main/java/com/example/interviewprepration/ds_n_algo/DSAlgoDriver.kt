@@ -20,5 +20,6 @@ object DSAlgoDriver {
         DFS_BFS.driverFunction()
         LFU.driverFunction()
         Sorting.driverFunction()
+        ExpressionTree.driverFunction()
     }
 }
