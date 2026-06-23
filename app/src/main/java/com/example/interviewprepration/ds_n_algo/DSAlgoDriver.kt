@@ -19,5 +19,6 @@ object DSAlgoDriver {
         LinkedList.driverFunction()
         DFS_BFS.driverFunction()
         LFU.driverFunction()
+        Sorting.driverFunction()
     }
 }
