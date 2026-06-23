@@ -38,6 +38,7 @@ object BST {
         leftView()
         createBSTFromPreorder()
         createBSTFromPostOrder()
+        removeNodesOutsideRange()
     }
 
     fun sampleBST(): Node {
@@ -443,9 +444,10 @@ object BST {
         return node
     }
 
-    fun createBSTFromPostOrder(){
+    fun createBSTFromPostOrder() {
         val postOrder = intArrayOf(7, 15, 10, 25, 30, 22, 20)
-        val root = createBSTFromPostOrderHelper(input = postOrder, start = 0, end = postOrder.size - 1)
+        val root =
+            createBSTFromPostOrderHelper(input = postOrder, start = 0, end = postOrder.size - 1)
         inOrder(root = root, tag = "createBSTFromPostOrder")
     }
 
@@ -468,5 +470,31 @@ object BST {
             node.left = createBSTFromPostOrderHelper(input, start, counter)
         }
         return node
+    }
+
+    fun removeNodesOutsideRange() {
+
+        val root = sampleBST()
+        val range = Pair(20, 30)
+
+        val newRoot = removeNodesOutsideRangeHelper(root, range)
+        inOrder(newRoot, "removeNodesOutsideRange()")
+    }
+
+    fun removeNodesOutsideRangeHelper(root: Node?, range: Pair<Int, Int>): Node? {
+        if (root == null)
+            return null
+
+        if (root.data < range.first) {
+            return removeNodesOutsideRangeHelper(root.right, range)
+        }
+        if (root.data > range.second) {
+            return removeNodesOutsideRangeHelper(root.left, range)
+        }
+
+        root.left = removeNodesOutsideRangeHelper(root.left, range)
+        root.right = removeNodesOutsideRangeHelper(root.right, range)
+
+        return root
     }
 }
