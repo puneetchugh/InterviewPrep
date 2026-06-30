@@ -192,7 +192,7 @@ object Boogle {
                             trie = parentNode.children[matrix[xCounter][yCounter].code - 'a'.code]!!
                         )
                     ) {
-                        Log.e(LOG_TAG, "Inside boogle1(), found word: $")
+                        Log.e(LOG_TAG, "Inside boogle1(), found word")
                     }
                 }
             }
