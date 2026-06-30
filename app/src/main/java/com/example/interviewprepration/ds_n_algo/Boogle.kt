@@ -176,7 +176,6 @@ object Boogle {
             insertWord(it, parentNode)
         }
 
-        //words.forEach {
         for (xCounter in 0 until matrix.size) {
             for (yCounter in 0 until matrix[xCounter].size) {
                 if (parentNode.children[matrix[xCounter][yCounter].code - 'a'.code] != null) {
@@ -198,7 +197,6 @@ object Boogle {
                 }
             }
         }
-        //}
     }
 
     fun boogleHelper(
@@ -249,9 +247,10 @@ object Boogle {
                     visited = visited,
                     trie = trie.children[matrix[x + point.first][y + point.second].code - 'a'.code]!!
                 )
-                if (isTrue) {
+                // commenting out to ensure all words are found
+                /*if (isTrue) {
                     return true
-                }
+                }*/
             }
         }
         visited[x][y] = false
