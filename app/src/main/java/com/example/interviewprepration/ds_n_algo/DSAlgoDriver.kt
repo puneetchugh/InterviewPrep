@@ -21,5 +21,6 @@ object DSAlgoDriver {
         LFU.driverFunction()
         Sorting.driverFunction()
         ExpressionTree.driverFunction()
+        DynamicProgramming.driverFunction()
     }
 }
