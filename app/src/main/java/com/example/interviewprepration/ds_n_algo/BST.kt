@@ -40,6 +40,18 @@ object BST {
         createBSTFromPostOrder()
         removeNodesOutsideRange()
         convertBST2DLL(sampleBST())
+        printCousins(sampleBST(), 15)
+        printCousins(sampleBST(), 18)
+
+        val sampleBSTForSumTree = sampleBST()
+        Log.e(LOG_TAG, "convertToSumTree(), Inorder before converting to sum tree: ")
+        inOrder(root = sampleBSTForSumTree, tag = "convertToSumTree()")
+        val sum = convertToSumTree(sampleBSTForSumTree)
+        Log.e(
+            LOG_TAG,
+            "convertToSumTree(), Final sum: $sum, Inorder after converting to sum tree: "
+        )
+        inOrder(root = sampleBSTForSumTree, tag = "convertToSumTree()")
     }
 
     fun sampleBST(): Node {
@@ -505,7 +517,7 @@ object BST {
 
         val head = convertBST2DLLHelper(root = root, head = null)
         var tmp = head
-        while(tmp != null){
+        while (tmp != null) {
             Log.e(LOG_TAG, "convertBST2DLL, node: ${tmp.data}")
             tmp = tmp?.right
         }
@@ -523,4 +535,71 @@ object BST {
 
         return convertBST2DLLHelper(root = root.left, head = root)
     }
+
+    fun printCousins(root: Node?, target: Int) {
+        Log.e(LOG_TAG, "Inside printCousins(), target: $target, root: $root")
+        if (root == null)
+            return
+
+        val queue = ArrayDeque<Node>()
+        queue.add(root)
+
+        var currentLevel = 0
+        var nodeLevel = Int.MAX_VALUE
+
+        val cousins = mutableListOf<Int>()
+
+        while (queue.isNotEmpty()) {
+            var nodeCount = queue.size
+            Log.e(LOG_TAG, "Inside printCousins(), level: $currentLevel, nodeCount: $nodeCount")
+            while (--nodeCount >= 0) {
+                val visiting = queue.removeFirst()
+
+                if (currentLevel == nodeLevel) {
+                    cousins.add(visiting.data)
+                }
+                if ((visiting.left != null && visiting.left?.data == target)
+                    || (visiting.right != null && visiting.right?.data == target
+                            )
+                ) {
+                    nodeLevel = currentLevel + 1
+                    continue
+                }
+
+                if (currentLevel < nodeLevel) {
+                    if (visiting.left != null) {
+                        queue.addLast(visiting.left!!)
+                    }
+                    if (visiting.right != null) {
+                        queue.addLast(visiting.right!!)
+                    }
+                }
+            }
+            currentLevel++
+        }
+        Log.e(
+            LOG_TAG,
+            "Inside printCousins(), printing cousins of $target: ${cousins.joinToString()}"
+        )
+    }
+
+    // Given a binary tree, in-place replace each node’s value to the sum of all elements present in its left and right subtree.
+    // You may assume the value of an empty child node to be 0.
+    fun convertToSumTree(root: Node?): Int {
+
+        Log.e(LOG_TAG, "Inside convertToSumTree(), root: ${root?.data}")
+        if (root == null) {
+            return 0
+        }
+
+        val left = convertToSumTree(root.left)
+        val right = convertToSumTree(root.right)
+        Log.e(LOG_TAG, "Inside convertToSumTree(), root: ${root?.data}, left: $left, right: $right")
+
+        val currentNodeData = root.data
+        root.data = left + right
+        return currentNodeData + root.data
+    }
+
+
 }
