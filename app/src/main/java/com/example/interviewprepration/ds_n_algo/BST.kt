@@ -39,6 +39,7 @@ object BST {
         createBSTFromPreorder()
         createBSTFromPostOrder()
         removeNodesOutsideRange()
+        convertBST2DLL(sampleBST())
     }
 
     fun sampleBST(): Node {
@@ -496,5 +497,30 @@ object BST {
         root.right = removeNodesOutsideRangeHelper(root.right, range)
 
         return root
+    }
+
+    fun convertBST2DLL(root: Node?) {
+        if (root == null)
+            return
+
+        val head = convertBST2DLLHelper(root = root, head = null)
+        var tmp = head
+        while(tmp != null){
+            Log.e(LOG_TAG, "convertBST2DLL, node: ${tmp.data}")
+            tmp = tmp?.right
+        }
+    }
+
+    fun convertBST2DLLHelper(root: Node?, head: Node?): Node? {
+        Log.e(LOG_TAG, "Inside convertBST2DLLHelper(), visiting, root: ${root?.data}")
+        if (root == null) {
+            return head
+        }
+
+        val right = convertBST2DLLHelper(root = root.right, head = head)
+        root.right = right
+        right?.let { right.left = root }
+
+        return convertBST2DLLHelper(root = root.left, head = root)
     }
 }
