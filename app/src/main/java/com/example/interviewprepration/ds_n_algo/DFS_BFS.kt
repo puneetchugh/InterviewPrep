@@ -1,6 +1,5 @@
 package com.example.interviewprepration.ds_n_algo
 
-import android.opengl.Matrix
 import kotlin.math.max
 import android.util.Log
 
@@ -31,6 +30,7 @@ object DFS_BFS {
 
         replaceZerosSurroundedByOnes()
         replaceZerosNotSurroundedByOnes()
+        nQueensWrapper(size = 5)
     }
 
     // longest path
@@ -309,4 +309,68 @@ object DFS_BFS {
             )
         }
     }
+
+    fun nQueensWrapper(size: Int) {
+        nQueens(inputMatrix = Array(size) { CharArray(size) { '.' } }, row = 0)
+    }
+
+    fun nQueens(inputMatrix: Array<CharArray>, row: Int): Boolean {
+
+        if (row >= inputMatrix.size) {
+            Log.e(LOG_TAG, "DFS: Found nQueens solution")
+            for (counter in inputMatrix.indices) {
+                Log.e(LOG_TAG, "DFS: nQueens solution: ${inputMatrix[counter].contentToString()}")
+            }
+            return true
+        }
+
+        for (columnCounter in 0 until inputMatrix[row].size) {
+
+            if (nQueensValidMove(row = row, column = columnCounter, inputMatrix = inputMatrix)) {
+                inputMatrix[row][columnCounter] = 'Q'
+                val retVal = nQueens(inputMatrix = inputMatrix, row = row + 1)
+                //if (!retVal) {
+                    inputMatrix[row][columnCounter] = '.'
+               // } else {
+                 //   return true
+               // }
+            }
+        }
+        return false
+    }
+
+    fun nQueensValidMove(row: Int, column: Int, inputMatrix: Array<CharArray>): Boolean {
+
+        var rowCounter = row
+        var columnCounter1 = column
+        while (rowCounter >= 0 && columnCounter1 >= 0) {
+            if (inputMatrix[rowCounter][columnCounter1] == 'Q') {
+                return false
+            }
+            rowCounter--
+            columnCounter1--
+        }
+        rowCounter = row
+        columnCounter1 = column
+
+        while (rowCounter >= 0 && columnCounter1 < inputMatrix[rowCounter].size) {
+            if (inputMatrix[rowCounter][columnCounter1] == 'Q') {
+                return false
+            }
+            rowCounter--
+            columnCounter1++
+        }
+
+        rowCounter = row
+        columnCounter1 = column
+
+        while (rowCounter >= 0) {
+            if (inputMatrix[rowCounter][column] == 'Q') {
+                return false
+            }
+            rowCounter--
+        }
+        return true
+    }
+
 }
