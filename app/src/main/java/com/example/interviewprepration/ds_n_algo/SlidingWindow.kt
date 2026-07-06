@@ -1,6 +1,7 @@
 package com.example.interviewprepration.ds_n_algo
 
 import android.util.Log
+import kotlin.math.max
 
 object SlidingWindow {
 
@@ -53,6 +54,8 @@ object SlidingWindow {
         val input2 = intArrayOf(10, 4, 2, 5, 6, 3, 8, 1)
         val minSum = minSumSubArray(input = input2, k = 3)
         Log.e(LOG_TAG, "Inside driverFunction(), minSumSubArray() minSum: $minSum")
+
+        longestSubArrayWithEqual0s1s()
     }
 
     //Find the longest substring of a string containing k distinct characters
@@ -290,5 +293,33 @@ object SlidingWindow {
             "Inside minSumSubArray(), minSum: $minSum, start: $start, end: $end"
         )
         return minSum
+    }
+
+    //Longest Subarray With Equal Number of 0s and 1s
+    fun longestSubArrayWithEqual0s1s() {
+        val input = arrayOf(1, 0, 1, 1, 1, 0, 0)
+        var maxLength = 0
+        var runningCount = 0
+        var runningSum = 0
+        val map = mutableMapOf<Int, Int>()
+
+        for ((index, number) in input.withIndex()) {
+            // we're adding -1 for element 0 in the array
+            runningSum += if (number == 0) -1 else 1
+
+            if (runningSum == 0) {
+                runningCount = index + 1
+            }
+
+            if (map.contains(runningSum)) {
+                val length = index - map[runningSum]!!
+                maxLength = max(length, maxLength)
+            } else {
+                map[runningSum] = index
+            }
+        }
+
+        //return maxLength
+        Log.e(LOG_TAG, "Inside longestSubArrayWithEqual0s1s(), maxLength: $maxLength")
     }
 }
