@@ -15,6 +15,8 @@ object Sorting {
 
         val arrayInput = intArrayOf(10, 20, 5, 1, 4, 50, 70, 33, 22, 11, 10, 33, 50, 1, 1)
         topKFreq(input = arrayInput, topK = 4)
+
+        quickSortWrapper()
     }
 
     // Sort an array of 0’s, 1’s, and 2’s (Dutch National Flag Problem)
@@ -106,5 +108,36 @@ object Sorting {
 
             )
         }
+    }
+
+
+    fun quickSortWrapper() {
+        val array = intArrayOf(10, 20, 5, 1, 4, 50, 70, 33, 22, 11, 10, 33, 50, 1, 1)
+        Log.e(LOG_TAG, "Inside quickSortWrapper(): initial array: ${array.contentToString()}")
+        quickSort(input = array, start = 0, end = array.size - 1)
+        Log.e(LOG_TAG, "Inside quickSortWrapper(): sorted array: ${array.contentToString()}")
+    }
+
+    fun quickSort(input: IntArray, start: Int, end: Int) {
+        if (start >= end)
+            return
+        val partitionIndex = partition(inputArray = input, start = start, end = end)
+        quickSort(input, start, partitionIndex - 1)
+        quickSort(input, partitionIndex + 1, end)
+    }
+
+    fun partition(inputArray: IntArray, start: Int, end: Int): Int {
+
+        Log.e(LOG_TAG, "Inside quickSort()->partition(), startIndex: $start, endIndex: $end")
+        var sortedIndex = start - 1
+        val pivot = inputArray[start]
+        for (counter in start..end) {
+            if (inputArray[counter] <= pivot) {
+                sortedIndex++
+                swap(array = inputArray, index1 = sortedIndex, index2 = counter)
+            }
+        }
+        swap(array = inputArray, index1 = start, index2 = sortedIndex)
+        return sortedIndex
     }
 }
