@@ -17,6 +17,7 @@ object Sorting {
         topKFreq(input = arrayInput, topK = 4)
 
         quickSortWrapper()
+        heapSort()
     }
 
     // Sort an array of 0’s, 1’s, and 2’s (Dutch National Flag Problem)
@@ -139,5 +140,55 @@ object Sorting {
         }
         swap(array = inputArray, index1 = start, index2 = sortedIndex)
         return sortedIndex
+    }
+
+    fun heapSort() {
+
+        val array = intArrayOf(10, 20, 5, 1, 4, 70, 33, 22, 11, 33, 50)
+        // val array = intArrayOf(9, 4, 3, 8, 10, 2, 5)
+        Log.e(
+            LOG_TAG,
+            "Inside heapSort(): initial array: ${array.contentToString()}, size: ${array.size}"
+        )
+
+        // Create a Heap
+        for (counter in (array.size / 2) - 1 downTo 0) {
+            Log.e(
+                LOG_TAG,
+                "Inside heapSort(): creating heap, index: $counter, element: ${array[counter]}"
+            )
+            heapify(array = array, index = counter, size = array.size)
+        }
+
+        Log.e(LOG_TAG, "heapSort(), Array after heap created: ${array.contentToString()}")
+
+        for (counter in array.size - 1 downTo 0) {
+            Log.e(LOG_TAG, "Inside heapSort(), last loop, counter: $counter, bigger element being moved to counter index is: ${array[0]}")
+            swap(array = array, index1 = 0, index2 = counter)
+            heapify(array = array, index = 0, size = counter)
+        }
+        Log.e(LOG_TAG, "Inside heapSort(): array after sorting: ${array.contentToString()}")
+    }
+
+    // max-heap
+    fun heapify(array: IntArray, index: Int, size: Int) {
+
+        Log.e(LOG_TAG, "Inside heapSort()->heapify(), index: $index, size: $size")
+        var tempIndex = index
+        var leftIndex = 2 * index + 1
+        var rightIndex = 2 * index + 2
+
+        if (leftIndex < size && array[tempIndex] < array[leftIndex]) {
+            tempIndex = leftIndex
+        }
+
+        if (rightIndex < size && array[tempIndex] < array[rightIndex]) {
+            tempIndex = rightIndex
+        }
+
+        if (tempIndex != index) {
+            swap(array = array, index1 = tempIndex, index2 = index)
+            heapify(array = array, index = tempIndex, size = size)
+        }
     }
 }
