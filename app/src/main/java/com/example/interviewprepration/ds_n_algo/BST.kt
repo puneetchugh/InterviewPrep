@@ -56,6 +56,8 @@ object BST {
 
         findDistanceBtwNodesWrapper()
         findDiameterWrapper()
+
+        isTreeSubTreeWrapper()
     }
 
     fun sampleBST(): Node {
@@ -82,6 +84,24 @@ object BST {
 
         nodeD.right = nodeF
         return root
+    }
+
+    fun sampleSubTree(): Node?{
+
+        val nodeB = Node(data = 32)
+        val nodeC = Node(data = 25)
+        val nodeE = Node(data = 50)
+        val nodeG = Node(data = 30)
+        val nodeH = Node(data = 22)
+
+        nodeB.left = nodeC
+        nodeB.right = nodeE
+
+
+        nodeC.left = nodeH
+        nodeC.right = nodeG
+
+        return nodeB
     }
 
     fun spiralPrint(root: Node?) {
@@ -717,6 +737,60 @@ object BST {
             "Inside findDiameter(), root: ${root.data} diameter: ${diameter}, height: ${height}"
         )
         return DiameterClass(height = height, diameter = diameter)
+    }
 
+    fun isTreeSubTreeWrapper(){
+        val mainRoot = sampleBST()
+
+        val subRoot1 = sampleBST()
+        val isSubTree1 = isTreeSubTree(mainRoot = mainRoot, subRoot = subRoot1)
+        Log.e(LOG_TAG, "Inside isTreeSubTreeWrapper(), isSubTree: $isSubTree1")
+
+        val subRoot2 = sampleSubTree()
+        val isSubTree2 = isTreeSubTree(mainRoot = mainRoot, subRoot = subRoot2)
+        Log.e(LOG_TAG, "Inside isTreeSubTreeWrapper(), isSubTree: $isSubTree2")
+    }
+
+    fun isTreeSubTree(mainRoot: Node?, subRoot: Node?): Boolean {
+        if (mainRoot == null || subRoot == null) {
+            return false
+        }
+        return isTreeSubTreeHelper(root = mainRoot, subRoot = subRoot, startedMatching = false)
+    }
+
+    fun isTreeSubTreeHelper(root: Node?, subRoot: Node?, startedMatching: Boolean): Boolean {
+        Log.e(LOG_TAG, "Inside isTreeSubTreeHelper(), startedMatching: $startedMatching, root: ${root?.data}, subRoot: ${subRoot?.data}")
+        if (startedMatching) {
+            if (root == null && subRoot == null) {
+                return true
+            } else if(root == null || subRoot == null){
+                return false
+            }
+        } else if (root == null || subRoot == null) {
+            return false
+        }
+
+        Log.e(LOG_TAG, "Inside isTreeSubTreeHelper(), root: ${root?.data}, subRoot: ${subRoot?.data}")
+        if (root.data == subRoot.data) {
+            return isTreeSubTreeHelper(
+                root = root.left,
+                subRoot = subRoot.left,
+                startedMatching = true
+            ) && isTreeSubTreeHelper(
+                root = root.right,
+                subRoot = subRoot.right,
+                startedMatching = true
+            )
+        } else {
+            return isTreeSubTreeHelper(
+                root = root.left,
+                subRoot = subRoot,
+                startedMatching = false
+            ) || isTreeSubTreeHelper(
+                root = root.right,
+                subRoot = subRoot,
+                startedMatching = false
+            )
+        }
     }
 }
