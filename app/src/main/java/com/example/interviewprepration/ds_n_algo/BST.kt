@@ -55,6 +55,7 @@ object BST {
         inOrder(root = sampleBSTForSumTree, tag = "convertToSumTree()")
 
         findDistanceBtwNodesWrapper()
+        findDiameterWrapper()
     }
 
     fun sampleBST(): Node {
@@ -670,12 +671,52 @@ object BST {
             return Int.MIN_VALUE
         }
 
-        if(root.data == data){
+        if (root.data == data) {
             return 0
-        } else if(data > root.data){
-            return 1+findHeightOfNode(root = root.right, data = data)
+        } else if (data > root.data) {
+            return 1 + findHeightOfNode(root = root.right, data = data)
         } else {
-            return 1+findHeightOfNode(root = root.left, data = data)
+            return 1 + findHeightOfNode(root = root.left, data = data)
         }
+    }
+
+
+    fun findDiameterWrapper() {
+        val root = sampleBST()
+        val diameter = findDiameter(root = root)
+        Log.e(LOG_TAG, "Inside findDiameterWrapper(), diameter: ${diameter.diameter}")
+    }
+
+    data class DiameterClass(var diameter: Int, var height: Int)
+
+    fun findDiameter(root: Node?): DiameterClass {
+
+        if (root == null) {
+            return DiameterClass(diameter = 0, height = 0)
+        }
+
+        val left = findDiameter(root = root.left)
+        val right = findDiameter(root = root.right)
+
+        Log.e(
+            LOG_TAG,
+            "Inside findDiameter(), root: ${root.data}, left, height: ${left.height}, diameter: ${left.diameter}, right, height: ${right.height}, diameter: ${right.diameter}"
+        )
+
+        val height = 1 + max(left.height, right.height)
+        val diameter = max(
+            if (left.height != 0 && right.height != 0) {
+                left.height + right.height + 1
+            } else {
+                left.height + right.height
+            }, max(left.diameter, right.diameter)
+        )
+
+        Log.e(
+            LOG_TAG,
+            "Inside findDiameter(), root: ${root.data} diameter: ${diameter}, height: ${height}"
+        )
+        return DiameterClass(height = height, diameter = diameter)
+
     }
 }
