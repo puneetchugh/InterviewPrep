@@ -3,6 +3,7 @@ package com.example.interviewprepration.ds_n_algo
 import android.util.Log
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.collections.ArrayDeque
+import kotlin.math.max
 
 object BST {
 
@@ -52,6 +53,8 @@ object BST {
             "convertToSumTree(), Final sum: $sum, Inorder after converting to sum tree: "
         )
         inOrder(root = sampleBSTForSumTree, tag = "convertToSumTree()")
+
+        findDistanceBtwNodesWrapper()
     }
 
     fun sampleBST(): Node {
@@ -601,5 +604,78 @@ object BST {
         return currentNodeData + root.data
     }
 
+    fun findLCA(root: Node?, data1: Int, data2: Int): Node? {
+        if (root == null) {
+            return null
+        }
+        if (root.data == data1 || root.data == data2) {
+            return root
+        }
 
+        val left = findLCA(root = root.left, data1 = data1, data2 = data2)
+        val right = findLCA(root = root.right, data1 = data1, data2 = data2)
+
+        if (left != null && right != null) {
+            return root
+        }
+
+        if (left != null) {
+            return left
+        }
+
+        if (right != null) {
+            return right
+        }
+        return null
+    }
+
+    fun findDistanceBtwNodesWrapper() {
+        val root = sampleBST()
+        val distance1 = findDistanceBtwNodes(root = root, data1 = 20, data2 = 30)
+        val distance2 = findDistanceBtwNodes(root = root, data1 = 10, data2 = 50)
+
+        Log.e(
+            LOG_TAG,
+            "Inside findDistanceBtwNodesWrapper(), distance between 20 and 30: $distance1"
+        )
+        Log.e(
+            LOG_TAG,
+            "Inside findDistanceBtwNodesWrapper(), distance between 10 and 50: $distance2"
+        )
+
+    }
+
+    // find distance between two nodes
+    fun findDistanceBtwNodes(root: Node?, data1: Int, data2: Int): Int {
+        val lca = findLCA(root = root, data1 = data1, data2 = data2)
+
+        if (lca == null) {
+            return -1
+        }
+
+        val heightOfData1FromLca = findHeightOfNode(root = lca, data = data1)
+        val heightOfData2FromLca = findHeightOfNode(root = lca, data = data2)
+
+        Log.e(LOG_TAG, "Inside findDistanceBtwNodes(), lca of $data2 and $data1 is: ${lca.data}")
+
+        Log.e(
+            LOG_TAG,
+            "Inside findDistanceBtwNodes(), heightOfData1 $data1 is $heightOfData1FromLca, heightOfData2 $data2: $heightOfData2FromLca"
+        )
+        return heightOfData1FromLca + heightOfData2FromLca
+    }
+
+    fun findHeightOfNode(root: Node?, data: Int): Int {
+        if (root == null) {
+            return Int.MIN_VALUE
+        }
+
+        if(root.data == data){
+            return 0
+        } else if(data > root.data){
+            return 1+findHeightOfNode(root = root.right, data = data)
+        } else {
+            return 1+findHeightOfNode(root = root.left, data = data)
+        }
+    }
 }
