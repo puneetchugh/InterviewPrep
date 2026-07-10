@@ -47,6 +47,26 @@ object LinkedList {
             }"
         )
 
+        val head = oddCountNode()
+        traversal(head = head, tag = "deleteANodeWithReference() before")
+        deleteANodeWithReference(head = head?.next?.next)
+        traversal(head = head, tag = "deleteANodeWithReference() after")
+
+        val head1 = evenCountNode()
+        traversal(head = head1, tag = "deleteANodeWithReference() before")
+        deleteANodeWithReference(head = head1?.next?.next)
+        traversal(head = head1, tag = "deleteANodeWithReference() after")
+    }
+
+    fun traversal(head: LLNode?, tag: String=""){
+        if(head==null)
+            return
+
+        var temp = head
+        while(temp!=null){
+            Log.e(LOG_TAG, "Inside traversal()->$tag, current node: ${temp.data}")
+            temp = temp.next
+        }
     }
 
     fun oddCountNode(): LLNode? {
@@ -295,5 +315,24 @@ object LinkedList {
             temp2 = temp2.next
         }
         return temp2
+    }
+
+    // Delete a node in a linked list without head pointer, given only access to that node
+    fun deleteANodeWithReference(head: LLNode?) {
+        if (head == null) {
+            return
+        }
+
+        var temp = head
+
+        while (temp != null && temp.next != null) {
+            Log.e(LOG_TAG, "Inside deleteANodeWithReference(), current node: ${temp.data}")
+            temp.data = temp.next?.data!!
+            if (temp.next?.next == null) {
+                temp.next = null
+                break
+            }
+            temp = temp.next
+        }
     }
 }
