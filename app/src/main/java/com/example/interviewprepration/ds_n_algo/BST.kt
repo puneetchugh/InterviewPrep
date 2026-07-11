@@ -58,6 +58,7 @@ object BST {
         findDiameterWrapper()
 
         isTreeSubTreeWrapper()
+        inOrderSuccessorWrapper()
     }
 
     fun sampleBST(): Node {
@@ -86,7 +87,7 @@ object BST {
         return root
     }
 
-    fun sampleSubTree(): Node?{
+    fun sampleSubTree(): Node? {
 
         val nodeB = Node(data = 32)
         val nodeC = Node(data = 25)
@@ -739,7 +740,7 @@ object BST {
         return DiameterClass(height = height, diameter = diameter)
     }
 
-    fun isTreeSubTreeWrapper(){
+    fun isTreeSubTreeWrapper() {
         val mainRoot = sampleBST()
 
         val subRoot1 = sampleBST()
@@ -759,18 +760,24 @@ object BST {
     }
 
     fun isTreeSubTreeHelper(root: Node?, subRoot: Node?, startedMatching: Boolean): Boolean {
-        Log.e(LOG_TAG, "Inside isTreeSubTreeHelper(), startedMatching: $startedMatching, root: ${root?.data}, subRoot: ${subRoot?.data}")
+        Log.e(
+            LOG_TAG,
+            "Inside isTreeSubTreeHelper(), startedMatching: $startedMatching, root: ${root?.data}, subRoot: ${subRoot?.data}"
+        )
         if (startedMatching) {
             if (root == null && subRoot == null) {
                 return true
-            } else if(root == null || subRoot == null){
+            } else if (root == null || subRoot == null) {
                 return false
             }
         } else if (root == null || subRoot == null) {
             return false
         }
 
-        Log.e(LOG_TAG, "Inside isTreeSubTreeHelper(), root: ${root?.data}, subRoot: ${subRoot?.data}")
+        Log.e(
+            LOG_TAG,
+            "Inside isTreeSubTreeHelper(), root: ${root?.data}, subRoot: ${subRoot?.data}"
+        )
         if (root.data == subRoot.data) {
             return isTreeSubTreeHelper(
                 root = root.left,
@@ -792,5 +799,40 @@ object BST {
                 startedMatching = false
             )
         }
+    }
+
+    fun inOrderSuccessorWrapper(){
+        val root = sampleBST()
+        val inOrderSuccessor = inOrderSuccessor(root = root, data = 15)
+        Log.e(LOG_TAG, "Inside inOrderSuccessorWrapper(), inOrderSuccessor of 15 is: ${inOrderSuccessor?.data}")
+
+        val inOrderSuccessor1 = inOrderSuccessor(root = root, data = 20)
+        Log.e(LOG_TAG, "Inside inOrderSuccessorWrapper(), inOrderSuccessor of 20 is: ${inOrderSuccessor1?.data}")
+    }
+
+    fun inOrderSuccessor(root: Node?, data: Int): Node? {
+        if (root == null) {
+            return null
+        }
+
+        var current = root
+        var parent: Node? = null
+        while (current != null) {
+            if (data > current.data) {
+                parent = current
+                current = current.right
+            } else if (data < current.data) {
+                parent = current
+                current = current.left
+            } else {
+                break
+            }
+        }
+
+        var inOrderSuccessor: Node? = current?.right
+        while (inOrderSuccessor?.left != null) {
+            inOrderSuccessor = inOrderSuccessor.left
+        }
+        return inOrderSuccessor
     }
 }
