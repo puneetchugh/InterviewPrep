@@ -59,6 +59,7 @@ object BST {
 
         isTreeSubTreeWrapper()
         inOrderSuccessorWrapper()
+        convertBT2FullBT()
     }
 
     fun sampleBST(): Node {
@@ -801,13 +802,19 @@ object BST {
         }
     }
 
-    fun inOrderSuccessorWrapper(){
+    fun inOrderSuccessorWrapper() {
         val root = sampleBST()
         val inOrderSuccessor = inOrderSuccessor(root = root, data = 15)
-        Log.e(LOG_TAG, "Inside inOrderSuccessorWrapper(), inOrderSuccessor of 15 is: ${inOrderSuccessor?.data}")
+        Log.e(
+            LOG_TAG,
+            "Inside inOrderSuccessorWrapper(), inOrderSuccessor of 15 is: ${inOrderSuccessor?.data}"
+        )
 
         val inOrderSuccessor1 = inOrderSuccessor(root = root, data = 20)
-        Log.e(LOG_TAG, "Inside inOrderSuccessorWrapper(), inOrderSuccessor of 20 is: ${inOrderSuccessor1?.data}")
+        Log.e(
+            LOG_TAG,
+            "Inside inOrderSuccessorWrapper(), inOrderSuccessor of 20 is: ${inOrderSuccessor1?.data}"
+        )
     }
 
     fun inOrderSuccessor(root: Node?, data: Int): Node? {
@@ -834,5 +841,34 @@ object BST {
             inOrderSuccessor = inOrderSuccessor.left
         }
         return inOrderSuccessor
+    }
+
+    //Convert a binary tree to a full tree by removing half nodes
+    fun convertBT2FullBT() {
+        val root = sampleBST()
+        Log.e(LOG_TAG, "Inside convertBT2FullBT()")
+        inOrder(root = root, tag = "before convertBT2FullBT()")
+        val newRoot = convertBT2FullBTHelper(root = root)
+        inOrder(newRoot, "after convertBT2FullBT()")
+    }
+
+    fun convertBT2FullBTHelper(root: Node?): Node? {
+        if (root == null) {
+            return null
+        }
+
+        val temp = root
+        temp.left = convertBT2FullBTHelper(root.left)
+        temp.right = convertBT2FullBTHelper(root.right)
+
+        if ((temp.left != null && temp.right != null) || (temp.left == null && temp.right == null)) {
+            return root
+        }
+
+        return if (temp.left != null) {
+            root.left
+        } else {
+            root.right
+        }
     }
 }
