@@ -8,6 +8,12 @@ object LinkedList {
     val LOG_TAG: String = LinkedList::class.java.simpleName
 
     data class LLNode(var data: Int, var next: LLNode? = null)
+    data class DLLNodeAndReference(
+        var data: Int,
+        var prev: DLLNodeAndReference? = null,
+        var next: DLLNodeAndReference? = null,
+        var reference: DLLNodeAndReference? = null
+    )
 
     fun driverFunction() {
 
@@ -56,14 +62,16 @@ object LinkedList {
         traversal(head = head1, tag = "deleteANodeWithReference() before")
         deleteANodeWithReference(head = head1?.next?.next)
         traversal(head = head1, tag = "deleteANodeWithReference() after")
+
+        flattenLinkedListWrapper()
     }
 
-    fun traversal(head: LLNode?, tag: String=""){
-        if(head==null)
+    fun traversal(head: LLNode?, tag: String = "") {
+        if (head == null)
             return
 
         var temp = head
-        while(temp!=null){
+        while (temp != null) {
             Log.e(LOG_TAG, "Inside traversal()->$tag, current node: ${temp.data}")
             temp = temp.next
         }
@@ -150,6 +158,48 @@ object LinkedList {
         node5.next = node6
         node6.next = node3
         return node1
+    }
+
+    fun createLinkedListWithReference(): DLLNodeAndReference {
+        val node11 = DLLNodeAndReference(data = 10)
+        val node12 = DLLNodeAndReference(data = 5, prev = node11)
+        val node13 = DLLNodeAndReference(data = 40, prev = node12)
+        val node14 = DLLNodeAndReference(data = 30, prev = node13)
+
+        node11.next = node12
+        node12.next = node13
+        node13.next = node14
+        node14.prev = node13
+        node13.prev = node12
+        node12.prev = node11
+
+        val node21 = DLLNodeAndReference(data = 25)
+        val node22 = DLLNodeAndReference(data = 60, prev = node21)
+        val node23 = DLLNodeAndReference(data = 20, prev = node22)
+
+        node21.next = node22
+        node22.next = node23
+        node23.prev = node22
+        node22.prev = node21
+
+        val node31 = DLLNodeAndReference(data = 15)
+        val node32 = DLLNodeAndReference(data = 55, prev = node31)
+        val node33 = DLLNodeAndReference(data = 35, prev = node32)
+
+        node31.next = node32
+        node32.next = node33
+        node33.prev = node32
+        node32.prev = node31
+
+        val node41 = DLLNodeAndReference(data = 45)
+
+        //references
+        node32.reference = node41
+        node22.reference = node32
+        node12.reference = node22
+
+        return node11
+
     }
 
     fun linkedListsWithIntersection(): Pair<LLNode?, LLNode?> {
@@ -333,6 +383,54 @@ object LinkedList {
                 break
             }
             temp = temp.next
+        }
+    }
+
+    fun flattenLinkedListWrapper() {
+        val head = createLinkedListWithReference()
+        flattenLinkedList(node = head, prev = null)
+        var temp: DLLNodeAndReference? = head
+        while (temp != null) {
+            Log.e(LOG_TAG, "Inside flattenLinkedListWrapper(), current node: ${temp.data}")
+            temp = temp.next
+        }
+    }
+
+    fun flattenLinkedList(
+        node: DLLNodeAndReference?,
+        prev: DLLNodeAndReference?
+    ): DLLNodeAndReference? {
+        Log.e(LOG_TAG, "Inside flattenLinkedList(), current node: ${node?.data}")
+        if (node == null) {
+            return null
+        }
+        var temp = node
+        while (temp?.prev != null) {
+            temp = temp.prev
+        }
+        if (prev != null) {
+            prev.next = temp
+            temp?.prev = prev
+        }
+        Log.e(LOG_TAG, "Inside flattenLinkedList(), before while loop, temp node: ${temp?.data}")
+        while (temp?.next != null) {
+            Log.e(LOG_TAG, "Inside flattenLinkedList(), while loop, next node: ${temp.next?.data}")
+            val next = temp.next
+            if (temp.reference != null) {
+                val currentLastNode = flattenLinkedList(node = temp?.reference, prev = temp)
+                currentLastNode?.next = next
+                next?.prev = currentLastNode
+            }
+            temp = next
+        }
+
+        return if (temp?.reference != null) {
+            flattenLinkedList(
+                node = temp,
+                prev = temp.reference
+            )
+        } else {
+            temp
         }
     }
 }
