@@ -61,6 +61,7 @@ object BST {
         inOrderSuccessorWrapper()
         convertBT2FullBT()
         deleteNodesOutsideRange()
+        maxSumPathWrapper()
     }
 
     fun sampleBST(): Node {
@@ -897,5 +898,30 @@ object BST {
         } else {//if(root.data < low){
             return deleteNodesOutsideRangeHelper(root = root.right, low, high)
         }
+    }
+
+    fun maxSumPathWrapper() {
+        val root = sampleBST()
+        inOrder(root, "maxSumPathWrapper()")
+        val maxSumPath = AtomicInteger(Int.MIN_VALUE)
+        val maxSumPathValue = maxSumPath(root = root, maxSumPath = maxSumPath)
+        Log.e(LOG_TAG, "Inside maxSumPathWrapper(), maxSumPath: ${maxSumPath.get()}")
+    }
+
+    fun maxSumPath(root: Node?, maxSumPath: AtomicInteger): Int {
+        if (root == null) {
+            return 0
+        }
+        val left = maxSumPath(root.left, maxSumPath)
+        val right = maxSumPath(root.right, maxSumPath)
+
+        val currentSumPath = left + right + root.data
+        Log.e(
+            LOG_TAG,
+            "Inside maxSumPath(), root: ${root.data}, left: ${left}, right: ${right}, currentSumPath: $currentSumPath, maxSumPath: ${maxSumPath.get()} "
+        )
+        maxSumPath.set(max(maxSumPath.get(), currentSumPath))
+
+        return root.data + max(left, right)
     }
 }
