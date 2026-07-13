@@ -60,6 +60,7 @@ object BST {
         isTreeSubTreeWrapper()
         inOrderSuccessorWrapper()
         convertBT2FullBT()
+        deleteNodesOutsideRange()
     }
 
     fun sampleBST(): Node {
@@ -869,6 +870,32 @@ object BST {
             root.left
         } else {
             root.right
+        }
+    }
+
+    fun deleteNodesOutsideRange() {
+        val root = sampleBST()
+        inOrder(root = root, tag = "before deleteNodesOutsideRange()")
+        val range = Pair(15, 25)
+        val newRoot =
+            deleteNodesOutsideRangeHelper(root = root, low = range.first, high = range.second)
+        inOrder(root = newRoot, tag = "after deleteNodesOutsideRange()")
+
+    }
+
+    fun deleteNodesOutsideRangeHelper(root: Node?, low: Int, high: Int): Node? {
+        if (root == null) {
+            return null
+        }
+
+        if (root.data in low..high) {
+            root.left = deleteNodesOutsideRangeHelper(root = root.left, low, high)
+            root.right = deleteNodesOutsideRangeHelper(root = root.right, low, high)
+            return root
+        } else if (root.data > high) {
+            return deleteNodesOutsideRangeHelper(root = root.left, low, high)
+        } else {//if(root.data < low){
+            return deleteNodesOutsideRangeHelper(root = root.right, low, high)
         }
     }
 }
