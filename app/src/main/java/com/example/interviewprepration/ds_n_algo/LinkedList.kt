@@ -67,6 +67,7 @@ object LinkedList {
         removeLoopWrapper()
         reverseLinkedList()
         deleteMAfterNWrapper()
+        reverseInGroupsOfNWrapper()
     }
 
     fun traversal(head: LLNode?, tag: String = "") {
@@ -497,7 +498,7 @@ object LinkedList {
         traversal(head = newHeader, tag = "after reverseLinkedList()")
     }
 
-    fun deleteMAfterNWrapper(){
+    fun deleteMAfterNWrapper() {
         val head = evenCountNode()
         traversal(head = head, tag = "before deleteMAfterN()")
         deleteMAfterN(head = head, m = 2, n = 3)
@@ -525,5 +526,58 @@ object LinkedList {
                 }
             }
         }
+    }
+
+    fun reverseInGroupsOfNWrapper() {
+        val head = evenCountNode()
+        traversal(head = head, tag = "before reverseInGroupsOfN()")
+        val newHeader = reverseInGroupsOfN(head = head, groupSize = 3)
+        traversal(head = newHeader, tag = "after reverseInGroupsOfN()")
+    }
+
+    fun reverseInGroupsOfN(head: LLNode?, groupSize: Int): LLNode? {
+        if (head == null) {
+            return null
+        }
+
+        var newHeader: LLNode? = null
+        var prev: LLNode? = null
+        var current: LLNode? = head
+        var next: LLNode? = current?.next
+        var counter = 0
+        var prevListLast: LLNode? = null
+        var currentListLast: LLNode? = null
+        var groupHeader: LLNode? = null
+
+        while (current != null) {
+
+            prevListLast = currentListLast
+            currentListLast = current
+            while (counter < groupSize && current != null) {
+
+                next = current.next
+                current.next = prev
+                prev = current
+                current = next
+                counter++
+            }
+            //currentListLast = current
+            counter = 0
+
+            if (newHeader == null) {
+                newHeader = prev
+            } else {
+                groupHeader = prev
+            }
+
+            if (groupHeader != null) {
+                prevListLast?.next = groupHeader
+            } /*else {
+                prevListLast = current
+            }*/
+            prev = null
+
+        }
+        return newHeader
     }
 }
