@@ -64,12 +64,15 @@ object LinkedList {
         traversal(head = head1, tag = "deleteANodeWithReference() after")
 
         flattenLinkedListWrapper()
+        removeLoopWrapper()
+        reverseLinkedList()
     }
 
     fun traversal(head: LLNode?, tag: String = "") {
         if (head == null)
             return
 
+        Log.e(LOG_TAG, "Inside traversal(), $tag, header: ${head.data}")
         var temp = head
         while (temp != null) {
             Log.e(LOG_TAG, "Inside traversal()->$tag, current node: ${temp.data}")
@@ -126,7 +129,7 @@ object LinkedList {
         return node1
     }
 
-    fun linkedListCycle1(): LLNode? {
+    fun linkedListCycle1(): LLNode {
         val node1 = LLNode(data = 20)
         val node2 = LLNode(data = 44)
         val node3 = LLNode(data = 88)
@@ -143,7 +146,7 @@ object LinkedList {
         return node1
     }
 
-    fun linkedListCycle2(): LLNode? {
+    fun linkedListCycle2(): LLNode {
         val node1 = LLNode(data = 20)
         val node2 = LLNode(data = 44)
         val node3 = LLNode(data = 88)
@@ -307,7 +310,41 @@ object LinkedList {
             slowPtr = slowPtr?.next
             fastPtr = fastPtr.next?.next
         }
-        return slowPtr
+        return fastPtr
+    }
+
+    fun removeLoopWrapper() {
+        val head1 = linkedListCycle1()
+        removeLoop(head = head1)
+
+        val head2 = linkedListCycle2()
+        removeLoop(head = head2)
+    }
+
+    fun removeLoop(head: LLNode) {
+
+        val loopNode = detectLoop(head = head)
+        if (loopNode == null) {
+            return
+        }
+
+        var newHeader: LLNode? = head
+        var loopStart = loopNode
+        while (newHeader != null) {
+
+            while (loopStart != null && newHeader != loopStart.next && loopNode.next != loopStart) {
+                loopStart = loopStart?.next
+            }
+
+            if (loopStart?.next == newHeader) {
+                loopStart.next = null
+                break
+            } else {
+                newHeader = newHeader.next
+            }
+        }
+
+        traversal(head = head, tag = "removeLoop(), after loop removal")
     }
 
     fun detectIntersection(heads: Pair<LLNode?, LLNode?>): LLNode? {
@@ -432,5 +469,30 @@ object LinkedList {
         } else {
             temp
         }
+    }
+
+    fun reverseLinkedList() {
+
+        val head = evenCountNode()
+
+        if (head == null)
+            return
+
+        traversal(head = head, tag = "before reverseLinkedList()")
+
+        var current: LLNode? = head
+        var prev: LLNode? = null
+        var next: LLNode? = null
+
+        while (current != null) {
+            next = current.next
+            current.next = prev
+            prev = current
+            current = next
+
+        }
+
+        val newHeader = prev
+        traversal(head = newHeader, tag = "after reverseLinkedList()")
     }
 }
