@@ -66,6 +66,7 @@ object LinkedList {
         flattenLinkedListWrapper()
         removeLoopWrapper()
         reverseLinkedList()
+        deleteMAfterNWrapper()
     }
 
     fun traversal(head: LLNode?, tag: String = "") {
@@ -494,5 +495,35 @@ object LinkedList {
 
         val newHeader = prev
         traversal(head = newHeader, tag = "after reverseLinkedList()")
+    }
+
+    fun deleteMAfterNWrapper(){
+        val head = evenCountNode()
+        traversal(head = head, tag = "before deleteMAfterN()")
+        deleteMAfterN(head = head, m = 2, n = 3)
+        traversal(head = head, tag = "after deleteMAfterN()")
+    }
+
+    fun deleteMAfterN(head: LLNode?, m: Int, n: Int) {
+        if (head == null)
+            return
+
+        var temp = head
+        var mCounter = 0
+        var nCounter = 1
+
+        while (temp != null) {
+            if (nCounter < n) {
+                nCounter++
+                temp = temp.next
+            } else {
+                temp.next = temp.next?.next
+                mCounter++
+                if (mCounter == m) {
+                    mCounter = 1
+                    nCounter = 0
+                }
+            }
+        }
     }
 }
