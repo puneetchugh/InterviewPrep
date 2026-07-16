@@ -561,7 +561,6 @@ object LinkedList {
                 current = next
                 counter++
             }
-            //currentListLast = current
             counter = 0
 
             if (newHeader == null) {
@@ -572,11 +571,8 @@ object LinkedList {
 
             if (groupHeader != null) {
                 prevListLast?.next = groupHeader
-            } /*else {
-                prevListLast = current
-            }*/
+            }
             prev = null
-
         }
         return newHeader
     }
