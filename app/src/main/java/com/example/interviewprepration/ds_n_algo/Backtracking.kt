@@ -13,6 +13,7 @@ object Backtracking {
         //allStringsPermutations(input = "puneet")
 
         wordBreakProblem()
+        balanceParenthesis()
     }
 
     /*****************************************************
@@ -180,5 +181,129 @@ object Backtracking {
             }
         }
         return false
+    }
+
+    // eg, "()()(", "((()))())"
+    fun balanceParenthesis() {
+        val list1 = mutableListOf<String>()
+        val input1 = "()()("
+        balanceParenthesisHelper(
+            input = input1,
+            index = 0,
+            openCount = 0,
+            closeCount = 0,
+            list = list1,
+            output = ""
+        )
+        Log.e(LOG_TAG, "Inside balanceParenthesis(), input1: $input1, list1: ${list1.joinToString()}")
+
+        val max1 = list1.maxBy { it.length }.length
+        Log.e(
+            LOG_TAG,
+            "Inside balanceParenthesis(), input1: $input1, list of max length/ min parenthesis removal: ${
+                list1.filter { it.length == max1 }.joinToString()
+            }"
+        )
+
+        val list2 = mutableListOf<String>()
+        val input2 = "()())()"
+        balanceParenthesisHelper(
+            input = input2,
+            index = 0,
+            openCount = 0,
+            closeCount = 0,
+            list = list2,
+            output = ""
+        )
+        Log.e(LOG_TAG, "Inside balanceParenthesis(), input2: $input2, list1: ${list2.joinToString()}")
+        val max2 = list2.maxBy { it.length }.length
+        Log.e(
+            LOG_TAG,
+            "Inside balanceParenthesis(), input2: $input2, list of max length/ min parenthesis removal: ${
+                list2.distinct().filter { it.length == max2 }.toList().joinToString()
+            }"
+        )
+    }
+
+    fun balanceParenthesisHelper(
+        input: String,
+        index: Int,
+        openCount: Int,
+        closeCount: Int,
+        output: String,
+        list: MutableList<String>
+    ) {
+        Log.e(
+            LOG_TAG,
+            "Inside balanceParenthesisHelper(), index: $index, input: $input, input size: ${input.length}, openCount: $openCount, closeCount: $closeCount, output: $output"
+        )
+        if (index >= input.length) {
+            if (openCount == closeCount) {
+                list.add(output)
+            } else {
+                null
+            }
+            return
+        }
+
+        if (input[index] == ')') {
+            if (openCount > closeCount) {
+                balanceParenthesisHelper(
+                    input = input,
+                    index = index + 1,
+                    openCount = openCount,
+                    closeCount = closeCount + 1,
+                    output = output + input[index],
+                    list = list
+                )
+                balanceParenthesisHelper(
+                    input = input,
+                    index = index + 1,
+                    openCount = openCount,
+                    closeCount = closeCount,
+                    output = output,
+                    list = list
+                )
+
+            } else {
+                if (openCount == closeCount) {
+                    balanceParenthesisHelper(
+                        input = input,
+                        index = index + 1,
+                        openCount = openCount,
+                        closeCount = closeCount,
+                        output = output,
+                        list = list
+                    )
+                }
+            }
+        } else if (input[index] == '(') {
+            balanceParenthesisHelper(
+                input = input,
+                index = index + 1,
+                openCount = openCount + 1,
+                closeCount = closeCount,
+                output = output + input[index],
+                list = list
+            )
+
+            balanceParenthesisHelper(
+                input = input,
+                index = index + 1,
+                openCount = openCount,
+                closeCount = closeCount,
+                output = output,
+                list = list
+            )
+        } else {
+            balanceParenthesisHelper(
+                input = input,
+                index = index + 1,
+                openCount = openCount,
+                closeCount = closeCount,
+                output = output + input[index],
+                list = list
+            )
+        }
     }
 }
