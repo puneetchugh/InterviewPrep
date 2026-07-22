@@ -68,6 +68,7 @@ object LinkedList {
         reverseLinkedList()
         deleteMAfterNWrapper()
         reverseInGroupsOfNWrapper()
+        splitIntoFrontBackWrapper()
     }
 
     fun traversal(head: LLNode?, tag: String = "") {
@@ -575,5 +576,48 @@ object LinkedList {
             prev = null
         }
         return newHeader
+    }
+
+
+    fun splitIntoFrontBackWrapper() {
+        val evenNodesHeader = evenCountNode()
+        val oddNodesHeader = oddCountNode()
+
+        val evenNodesPair = splitIntoFrontBack(evenNodesHeader)
+        val oddNodesPair = splitIntoFrontBack(oddNodesHeader)
+
+        traversal(head = evenNodesHeader, "Even node counts: splitIntoFrontBackWrapper()")
+        Log.e(
+            LOG_TAG,
+            "Inside splitIntoFrontBackWrapper(), evenNodesPair.first: ${evenNodesPair.first?.data}, evenNodesPair.second: ${evenNodesPair.second?.data}"
+        )
+
+        traversal(head = oddNodesHeader, "Odd node counts: splitIntoFrontBackWrapper()")
+        Log.e(
+            LOG_TAG,
+            "Inside splitIntoFrontBackWrapper(), oddNodesPair.first: ${oddNodesPair.first?.data}, oddNodesPair.second: ${oddNodesPair.second?.data}"
+        )
+    }
+
+    //Split nodes of a linked list into the front and back halves
+    fun splitIntoFrontBack(head: LinkedList.LLNode?): Pair<LLNode?, LLNode?> {
+
+        if (head == null) {
+            return Pair(null, null)
+        }
+
+        var slowPtr = head
+        var fastPtr = head.next
+
+        while (fastPtr != null && fastPtr.next != null) {
+
+            fastPtr = fastPtr.next?.next
+            slowPtr = slowPtr?.next
+        }
+
+        val first = head
+        val second = slowPtr?.next
+
+        return Pair(first, second)
     }
 }
