@@ -8,6 +8,8 @@ object LinkedList {
     val LOG_TAG: String = LinkedList::class.java.simpleName
 
     data class LLNode(var data: Int, var next: LLNode? = null)
+    data class DLLNode(var data: Int, var next: DLLNode? = null, var prev: DLLNode? = null)
+    data class DLLNodeWrapper(var node: DLLNode?)
     data class DLLNodeAndReference(
         var data: Int,
         var prev: DLLNodeAndReference? = null,
@@ -619,5 +621,24 @@ object LinkedList {
         val second = slowPtr?.next
 
         return Pair(first, second)
+    }
+
+    // Construct a height-balanced BST from a sorted doubly linked list
+    fun constructBSTFromSortedDLL(head: DLLNodeWrapper, nodes: Int): DLLNode? {
+        if (head.node == null) {
+            return null
+        }
+
+        val root = head.node
+
+        val left = constructBSTFromSortedDLL(head = head, nodes = nodes / 2)
+        root!!.prev = left
+
+        head.node = head.node!!.next
+
+        val right = constructBSTFromSortedDLL(head = head, nodes = (nodes - (nodes / 2 + 1)))
+        root.next = right
+
+        return root
     }
 }
