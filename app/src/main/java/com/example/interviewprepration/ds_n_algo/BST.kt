@@ -62,6 +62,7 @@ object BST {
         convertBT2FullBT()
         deleteNodesOutsideRange()
         maxSumPathWrapper()
+        extractLeavesWrapper()
     }
 
     fun sampleBST(): Node {
@@ -923,5 +924,44 @@ object BST {
         maxSumPath.set(max(maxSumPath.get(), currentSumPath))
 
         return root.data + max(left, right)
+    }
+
+    fun extractLeavesWrapper() {
+        val root = sampleBST()
+        extractLeaves(root)
+    }
+
+
+    //Extract leaves of a binary tree into a doubly-linked list
+    // creating extra space for DLL
+    fun extractLeaves(root: Node) {
+
+        val dllRoot = LinkedList.DLLNodeWrapper(node = null)
+        reverseInOrder(root = root, dllRoot = dllRoot)
+        Log.e(LOG_TAG, "Inside extractLeaves(), printing DLL: ")
+        var temp = dllRoot.node
+        while (temp != null) {
+            Log.e(LOG_TAG, "Inside extractLeaves(), printing DLL: ${temp.data}")
+            temp = temp.next
+        }
+    }
+
+    fun reverseInOrder(root: Node?, dllRoot: LinkedList.DLLNodeWrapper) {
+        if (root == null)
+            return
+
+        if (root.left == null && root.right == null) {
+            LinkedList.DLLNode(data = root.data).apply {
+                if (dllRoot.node != null) {
+                    this.next = dllRoot.node
+                    dllRoot.node?.prev = this
+                }
+                dllRoot.node = this
+            }
+            return
+        }
+
+        reverseInOrder(root.right, dllRoot)
+        reverseInOrder(root.left, dllRoot)
     }
 }
