@@ -8,6 +8,7 @@ object LinkedList {
     val LOG_TAG: String = LinkedList::class.java.simpleName
 
     data class LLNode(var data: Int, var next: LLNode? = null)
+    data class LLNodeWrapper(var node: LLNode? = null)
     data class DLLNode(var data: Int, var next: DLLNode? = null, var prev: DLLNode? = null)
     data class DLLNodeWrapper(var node: DLLNode?)
     data class DLLNodeAndReference(
@@ -72,6 +73,7 @@ object LinkedList {
         reverseInGroupsOfNWrapper()
         splitIntoFrontBackWrapper()
         swapKthNodeFromStartEnd()
+        checkingPalindromeWrapper()
     }
 
     fun traversal(head: LLNode?, tag: String = "") {
@@ -643,7 +645,7 @@ object LinkedList {
         return root
     }
 
-    fun swapKthNodeFromStartEnd(){
+    fun swapKthNodeFromStartEnd() {
         val head = evenCountNode()
         //traversal(head = head, tag = "swapKthNodeFromStartEnd() before")
         swapKthNodeFromStartEndHelper(head = head, k = 3)
@@ -673,5 +675,56 @@ object LinkedList {
         kthNodeFromStart.data = tempData
 
         traversal(head = head, tag = "swapKthNodeFromStartEnd() after")
+    }
+
+    fun checkingPalindromeWrapper() {
+
+        val node1 = LLNode(data = 1)
+        val node2 = LLNode(data = 2)
+        val node3 = LLNode(data = 3)
+        val node4 = LLNode(data = 2)
+        val node5 = LLNode(data = 1)
+
+        node1.next = node2
+        node2.next = node3
+        node3.next = node4
+        node4.next = node5
+
+        val head1 = node1
+
+        val node11 = LLNode(data = 1)
+        val node21 = LLNode(data = 2)
+        val node31 = LLNode(data = 3)
+        val node41 = LLNode(data = 3)
+        val node51 = LLNode(data = 2)
+        val node61 = LLNode(data = 1)
+
+        node11.next = node21
+        node21.next = node31
+        node31.next = node41
+        node41.next = node51
+        node51.next = node61
+
+        val head11 = node11
+
+        traversal(head = head1, tag = "First list, checkingPalindromeWrapper() before")
+        val isPalindrome1 = checkingPalindrome(left = LLNodeWrapper(node = head1), right = head1)
+        Log.e(LOG_TAG, "Inside checkingPalindromeWrapper(), isPalindrome: $isPalindrome1")
+
+        traversal(head = head11, tag = "SEcond list, checkingPalindromeWrapper() before")
+        val isPalindrome2 = checkingPalindrome(left = LLNodeWrapper(node = head11), right = head11)
+        Log.e(LOG_TAG, "Inside checkingPalindromeWrapper(), isPalindrome: $isPalindrome2")
+    }
+
+    fun checkingPalindrome(left: LLNodeWrapper, right: LLNode?): Boolean {
+
+        if (right == null)
+            return true
+        val isPalindrome = checkingPalindrome(left = left, right = right.next)
+        if (isPalindrome.not()) {
+            return false
+        }
+        left.node = left.node?.next
+        return true
     }
 }
