@@ -71,6 +71,7 @@ object LinkedList {
         deleteMAfterNWrapper()
         reverseInGroupsOfNWrapper()
         splitIntoFrontBackWrapper()
+        swapKthNodeFromStartEnd()
     }
 
     fun traversal(head: LLNode?, tag: String = "") {
@@ -100,7 +101,7 @@ object LinkedList {
         return node1
     }
 
-    fun evenCountNode(): LLNode? {
+    fun evenCountNode(): LLNode {
         val node1 = LLNode(data = 10)
         val node2 = LLNode(data = 4)
         val node3 = LLNode(data = 99)
@@ -640,5 +641,37 @@ object LinkedList {
         root.next = right
 
         return root
+    }
+
+    fun swapKthNodeFromStartEnd(){
+        val head = evenCountNode()
+        //traversal(head = head, tag = "swapKthNodeFromStartEnd() before")
+        swapKthNodeFromStartEndHelper(head = head, k = 3)
+    }
+
+    //Swap k’th node from beginning with k’th node from the end in a linked list
+    fun swapKthNodeFromStartEndHelper(head: LLNode, k: Int) {
+
+        traversal(head = head, tag = "swapKthNodeFromStartEnd() before")
+
+        var counter: Int = 1
+        var temp: LLNode? = head
+
+        while (counter < k && temp != null) {
+            temp = temp.next
+            counter++
+        }
+
+        var kthNodeFromStart: LLNode? = temp
+        var temp2: LLNode? = head
+        while (temp?.next != null) {
+            temp2 = temp2?.next
+            temp = temp.next
+        }
+        val tempData = temp2!!.data
+        temp2.data = kthNodeFromStart!!.data
+        kthNodeFromStart.data = tempData
+
+        traversal(head = head, tag = "swapKthNodeFromStartEnd() after")
     }
 }
