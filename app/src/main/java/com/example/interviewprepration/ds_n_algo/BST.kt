@@ -63,6 +63,7 @@ object BST {
         deleteNodesOutsideRange()
         maxSumPathWrapper()
         extractLeavesWrapper()
+        checkIsMinHeapWrapper()
     }
 
     fun sampleBST(): Node {
@@ -102,11 +103,62 @@ object BST {
         nodeB.left = nodeC
         nodeB.right = nodeE
 
-
         nodeC.left = nodeH
         nodeC.right = nodeG
 
         return nodeB
+    }
+
+    fun createMaxHeap(): Node {
+        val root = Node(data = 44)
+        val nodeA = Node(data = 40)
+        val nodeB = Node(data = 32)
+        val nodeC = Node(data = 33)
+        val nodeD = Node(data = 15)
+        val nodeE = Node(data = 11)
+        val nodeF = Node(data = 18)
+        val nodeG = Node(data = 30)
+        val nodeH = Node(data = 22)
+
+        root.left = nodeA
+        root.right = nodeB
+
+        nodeA.left = nodeC
+        nodeA.right = nodeE
+
+        nodeB.right = nodeD
+        nodeB.left = nodeF
+
+        nodeC.left = nodeH
+        nodeC.right = nodeG
+
+        return root
+    }
+
+    fun createMinHeap(): Node {
+        val root = Node(data = 5)
+        val nodeA = Node(data = 10)
+        val nodeB = Node(data = 22)
+        val nodeC = Node(data = 33)
+        val nodeD = Node(data = 25)
+        val nodeE = Node(data = 11)
+        val nodeF = Node(data = 28)
+        val nodeG = Node(data = 39)
+        val nodeH = Node(data = 44)
+
+        root.left = nodeA
+        root.right = nodeB
+
+        nodeA.left = nodeC
+        nodeA.right = nodeE
+
+        nodeB.right = nodeD
+        nodeB.left = nodeF
+
+        nodeC.left = nodeH
+        nodeC.right = nodeG
+
+        return root
     }
 
     fun spiralPrint(root: Node?) {
@@ -963,5 +1015,74 @@ object BST {
 
         reverseInOrder(root.right, dllRoot)
         reverseInOrder(root.left, dllRoot)
+    }
+
+    fun checkIsMinHeapWrapper() {
+        val rootOfHeap = createMaxHeap()
+        val nodesCount = countNodes(rootOfHeap)
+        val isComplete = checkIsComplete(nodesCount, rootOfHeap, 0)
+        val isMinHeap = isComplete && isMinHeap(rootOfHeap)
+        Log.e(
+            LOG_TAG,
+            "Inside checkIsMinHeapWrapper(), isComplete: ${isComplete}, isMinHeap: $isMinHeap"
+        )
+
+        val rootOfHeap2 = createMinHeap()
+        val nodesCount2 = countNodes(rootOfHeap2)
+        val isComplete2 = checkIsComplete(nodesCount2, rootOfHeap2, 0)
+        val isMinHeap2 = isComplete2 && isMinHeap(rootOfHeap2)
+        Log.e(
+            LOG_TAG,
+            "Inside checkIsMinHeapWrapper(), isComplete: ${isComplete2}, isMinHeap: $isMinHeap2"
+        )
+    }
+
+    fun countNodes(root: Node?): Int {
+        if (root == null)
+            return 0
+
+        return 1 + countNodes(root.left) + countNodes(root.right)
+    }
+
+    fun checkIsComplete(totalNode: Int, root: Node?, index: Int): Boolean {
+        if (root == null)
+            return true
+
+        if (index >= totalNode)
+            return false
+
+        return checkIsComplete(
+            totalNode = totalNode,
+            root = root.left,
+            index = 2 * index + 1
+        ) && checkIsComplete(
+            totalNode = totalNode,
+            root = root.right,
+            index = 2 * index + 2
+        )
+    }
+
+    fun isMinHeap(root: Node?): Boolean {
+        Log.e(
+            LOG_TAG,
+            "Inside isMinHeap(), root: ${root?.data}, left: ${root?.left?.data}, right: ${root?.right?.data}"
+        )
+        if (root == null)
+            return true
+
+        root.left?.let { left ->
+            if (left.data < root.data)
+                return false
+            if (!isMinHeap(root.left))
+                return false
+        }
+
+        root.right?.let { right ->
+            if (right.data < root.data)
+                return false
+            if (!isMinHeap(root.right))
+                return false
+        }
+        return true
     }
 }
