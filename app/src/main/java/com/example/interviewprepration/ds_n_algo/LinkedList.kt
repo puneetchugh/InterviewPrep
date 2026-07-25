@@ -74,6 +74,7 @@ object LinkedList {
         splitIntoFrontBackWrapper()
         swapKthNodeFromStartEnd()
         checkingPalindromeWrapper()
+        reverseLLRecWrapper()
     }
 
     fun traversal(head: LLNode?, tag: String = "") {
@@ -726,5 +727,25 @@ object LinkedList {
         }
         left.node = left.node?.next
         return true
+    }
+
+    fun reverseLLRecWrapper() {
+        val head = evenCountNode()
+        traversal(head = head, tag = "reverseLLRecWrapper() before")
+        val newHeader = reverseLLRec(head = head)
+        traversal(head = newHeader.first, tag = "reverseLLRecWrapper() after")
+    }
+
+    fun reverseLLRec(head: LLNode?): Pair<LLNode?, LLNode?> {
+        if (head == null) {
+            return Pair(null, null)
+        }
+
+        var prev = reverseLLRec(head.next)
+        prev.second?.next = head
+        head.next = null
+        val newHeader = prev.first ?: head
+        val returnPair = Pair(newHeader, head)
+        return returnPair
     }
 }
