@@ -1,6 +1,7 @@
 package com.example.interviewprepration.ds_n_algo
 
 import android.util.Log
+import java.util.PriorityQueue
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.collections.ArrayDeque
 import kotlin.math.max
@@ -66,6 +67,7 @@ object BST {
         extractLeavesWrapper()
         checkIsMinHeapWrapper()
         fixBSTWrapper()
+        buildHuffmanTreeWrapper()
     }
 
     fun sampleBST(): Node {
@@ -1162,5 +1164,83 @@ object BST {
             firstNode = firstNode,
             secondNode = secondNode
         )
+    }
+
+    data class HuffmanNode(
+        val data: Char?,
+        val freq: Int,
+        var left: HuffmanNode?,
+        var right: HuffmanNode?
+    )
+
+    fun buildHuffmanTreeWrapper() {
+        val inputString = "Huffman coding is a data compression algorithm."
+        val freqMap = mutableMapOf<Char, Int>()
+        inputString.forEach {
+            freqMap[it] = (freqMap[it] ?: 0) + 1
+            Log.e(LOG_TAG, "buildHuffmanTreeWrapper(), char: $it, freq: ${freqMap[it]}")
+        }
+        val rootNode = buildHuffmanTree(freqMap = freqMap)
+        val map = mutableMapOf<Char, String>()
+        huffmanEncoding(root = rootNode, map = map, input = "")
+        Log.e(LOG_TAG, "buildHuffmanTreeWrapper(), map: $map")
+
+        //Encoding the input string
+        var encodedString = StringBuilder()
+        inputString.forEach {
+            encodedString.append(map[it])
+        }
+        Log.e(LOG_TAG, "buildHuffmanTreeWrapper(), encodedString: $encodedString")
+    }
+
+    fun buildHuffmanTree(freqMap: Map<Char, Int>): HuffmanNode {
+
+        val priorityQueue = PriorityQueue<HuffmanNode>(compareBy { it.freq })
+
+        freqMap.forEach { key, value ->
+            priorityQueue.add(HuffmanNode(data = key, freq = value, left = null, right = null))
+        }
+
+        Log.e(LOG_TAG, "Inside buildHuffmanTree(), priorityQueue.size: ${priorityQueue.size}, priorityQueue: $priorityQueue")
+
+        while (priorityQueue.size > 1) {
+            val left = priorityQueue.poll()
+            val right = priorityQueue.poll()
+            Log.e(LOG_TAG, "Inside buildHuffmanTree(), building huffman tree, priorityQueue.size: ${priorityQueue.size}, left: ${left}, freq: ${left.freq}, right: ${right}, freq: ${right.freq}")
+
+            val newRoot = HuffmanNode(data = null, freq = left.freq + right.freq, left = left, right = right)
+            priorityQueue.add(newRoot)
+        }
+        val node = priorityQueue.poll()
+        Log.e(LOG_TAG, "buildHuffmanTree(), priorityQueue.size: ${priorityQueue.size}, node: ${node.data}, freq: ${node.freq}")
+        huffmanInorder(node)
+        return node
+    }
+
+    fun huffmanInorder(root: HuffmanNode?){
+        if(root == null)
+            return
+
+        huffmanInorder(root.left)
+        Log.e(LOG_TAG, "huffmanInorder(), char: ${root.data}, freq: ${root.freq}")
+        huffmanInorder(root.right)
+    }
+
+    fun huffmanDecoding() {
+
+    }
+
+    fun huffmanEncoding(input: String, root: HuffmanNode?, map: MutableMap<Char, String>) {
+
+        if (root == null)
+            return
+
+        if (root.left == null && root.right == null) {
+            map[root.data!!] = if (input.isNotEmpty()) input else "1"
+        }
+        Log.e(LOG_TAG, "Inside huffmanEncoding(), root: ${root.data}, input: $input, freq: ${root.freq}")
+
+        huffmanEncoding(root = root.left, map = map, input = input + "0")
+        huffmanEncoding(root = root.right, map = map, input = input + "1")
     }
 }
