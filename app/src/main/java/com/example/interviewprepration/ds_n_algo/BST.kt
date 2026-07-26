@@ -10,6 +10,7 @@ object BST {
     val LOG_TAG: String = BST::class.java.name
 
     data class Node(var data: Int, var left: Node? = null, var right: Node? = null)
+    data class NodeWrapperOnlyNode(var node: Node?)
     data class DLLNode(var data: Int, var prev: Node? = null, var next: Node? = null)
 
     fun driverFunction() {
@@ -64,6 +65,7 @@ object BST {
         maxSumPathWrapper()
         extractLeavesWrapper()
         checkIsMinHeapWrapper()
+        fixBSTWrapper()
     }
 
     fun sampleBST(): Node {
@@ -107,6 +109,32 @@ object BST {
         nodeC.right = nodeG
 
         return nodeB
+    }
+
+    fun sampleBTWithOneIssue(): Node? {
+        val root = Node(data = 20)
+        val nodeA = Node(data = 10)
+        val nodeB = Node(data = 32)
+        val nodeC = Node(data = 15)
+        val nodeD = Node(data = 25)
+        val nodeE = Node(data = 50)
+        val nodeF = Node(data = 18)
+        val nodeG = Node(data = 30)
+        val nodeH = Node(data = 22)
+
+        root.left = nodeA
+        root.right = nodeB
+
+        nodeB.left = nodeC
+        nodeB.right = nodeE
+
+        nodeA.right = nodeD
+
+        nodeC.left = nodeH
+        nodeC.right = nodeG
+
+        nodeD.right = nodeF
+        return root
     }
 
     fun createMaxHeap(): Node {
@@ -492,7 +520,7 @@ object BST {
         leftViewTraversal(root = root)
     }
 
-    fun leftViewTraversal(root: BST.Node?) {
+    fun leftViewTraversal(root: Node?) {
         if (root == null) {
             return
         }
@@ -1084,5 +1112,55 @@ object BST {
                 return false
         }
         return true
+    }
+
+    fun fixBSTWrapper() {
+        val root = sampleBTWithOneIssue()
+        inOrder(root, "fixBSTWrapper() before fixing")
+        val prev = NodeWrapperOnlyNode(null)
+        val firstNode = NodeWrapperOnlyNode(null)
+        val secondNode = NodeWrapperOnlyNode(null)
+        fixBT(root = root, prev = prev, firstNode = firstNode, secondNode = secondNode)
+        val temp = firstNode.node?.data
+        firstNode.node?.data = secondNode.node?.data!!
+        if (temp != null) {
+            secondNode.node?.data = temp
+        }
+        inOrder(root, "fixBSTWrapper() after fixing")
+
+    }
+
+    //Fix a binary tree that is only one swap away from becoming a BST
+    fun fixBT(
+        root: Node?,
+        prev: NodeWrapperOnlyNode,
+        firstNode: NodeWrapperOnlyNode,
+        secondNode: NodeWrapperOnlyNode
+    ) {
+        if (root == null)
+            return
+
+        fixBT(
+            root = root.left,
+            prev = prev,
+            firstNode = firstNode,
+            secondNode = secondNode
+        )
+        if (prev.node != null) {
+            if (prev.node!!.data > root.data) {
+                if (firstNode.node == null) {
+                    firstNode.node = prev.node
+                } else {
+                    secondNode.node = root
+                }
+            }
+        }
+        prev.node = root
+        fixBT(
+            root = root.right,
+            prev = prev,
+            firstNode = firstNode,
+            secondNode = secondNode
+        )
     }
 }
