@@ -68,6 +68,7 @@ object BST {
         checkIsMinHeapWrapper()
         fixBSTWrapper()
         buildHuffmanTreeWrapper()
+        checkIfSymmetric()
     }
 
     fun sampleBST(): Node {
@@ -93,6 +94,34 @@ object BST {
         nodeC.right = nodeG
 
         nodeD.right = nodeF
+        return root
+    }
+
+    fun sampleBSTSymmetric(): Node {
+        val root = Node(data = 20)
+        val nodeA = Node(data = 10)
+        val nodeB = Node(data = 32)
+        val nodeC = Node(data = 25)
+        val nodeD = Node(data = 15)
+        val nodeE = Node(data = 50)
+        val nodeF = Node(data = 18)
+        val nodeG = Node(data = 30)
+        val nodeH = Node(data = 22)
+
+        root.left = nodeA
+        root.right = nodeB
+
+        nodeB.left = nodeC
+        //nodeB.right = nodeE
+
+        nodeA.right = nodeD
+
+        nodeC.left = nodeH
+        nodeC.right = nodeG
+
+        nodeD.right = nodeF
+        nodeD.left = nodeE
+
         return root
     }
 
@@ -1201,24 +1230,34 @@ object BST {
             priorityQueue.add(HuffmanNode(data = key, freq = value, left = null, right = null))
         }
 
-        Log.e(LOG_TAG, "Inside buildHuffmanTree(), priorityQueue.size: ${priorityQueue.size}, priorityQueue: $priorityQueue")
+        Log.e(
+            LOG_TAG,
+            "Inside buildHuffmanTree(), priorityQueue.size: ${priorityQueue.size}, priorityQueue: $priorityQueue"
+        )
 
         while (priorityQueue.size > 1) {
             val left = priorityQueue.poll()
             val right = priorityQueue.poll()
-            Log.e(LOG_TAG, "Inside buildHuffmanTree(), building huffman tree, priorityQueue.size: ${priorityQueue.size}, left: ${left}, freq: ${left.freq}, right: ${right}, freq: ${right.freq}")
+            Log.e(
+                LOG_TAG,
+                "Inside buildHuffmanTree(), building huffman tree, priorityQueue.size: ${priorityQueue.size}, left: ${left}, freq: ${left.freq}, right: ${right}, freq: ${right.freq}"
+            )
 
-            val newRoot = HuffmanNode(data = null, freq = left.freq + right.freq, left = left, right = right)
+            val newRoot =
+                HuffmanNode(data = null, freq = left.freq + right.freq, left = left, right = right)
             priorityQueue.add(newRoot)
         }
         val node = priorityQueue.poll()
-        Log.e(LOG_TAG, "buildHuffmanTree(), priorityQueue.size: ${priorityQueue.size}, node: ${node.data}, freq: ${node.freq}")
+        Log.e(
+            LOG_TAG,
+            "buildHuffmanTree(), priorityQueue.size: ${priorityQueue.size}, node: ${node.data}, freq: ${node.freq}"
+        )
         huffmanInorder(node)
         return node
     }
 
-    fun huffmanInorder(root: HuffmanNode?){
-        if(root == null)
+    fun huffmanInorder(root: HuffmanNode?) {
+        if (root == null)
             return
 
         huffmanInorder(root.left)
@@ -1238,9 +1277,35 @@ object BST {
         if (root.left == null && root.right == null) {
             map[root.data!!] = if (input.isNotEmpty()) input else "1"
         }
-        Log.e(LOG_TAG, "Inside huffmanEncoding(), root: ${root.data}, input: $input, freq: ${root.freq}")
+        Log.e(
+            LOG_TAG,
+            "Inside huffmanEncoding(), root: ${root.data}, input: $input, freq: ${root.freq}"
+        )
 
         huffmanEncoding(root = root.left, map = map, input = input + "0")
         huffmanEncoding(root = root.right, map = map, input = input + "1")
+    }
+
+    //Check if a binary tree is symmetric or not
+    fun checkIfSymmetric() {
+        val root = sampleBST()
+        val isSymmetric = checkIfSymmetricHelper(root1 = root.left, root2 = root.right)
+        Log.e(LOG_TAG, "Inside checkIfSymmetric(), isSymmetric: $isSymmetric")
+
+        val root2 = sampleBSTSymmetric()
+        val isSymmetric2 = checkIfSymmetricHelper(root1 = root2.left, root2 = root2.right)
+        Log.e(LOG_TAG, "Inside checkIfSymmetric(), isSymmetric2: $isSymmetric2")
+    }
+
+    fun checkIfSymmetricHelper(root1: Node?, root2: Node?): Boolean {
+        if (root1 == null && root2 == null) {
+            return true
+        }
+
+        return (root1 != null && root2 != null) && checkIfSymmetricHelper(
+            root1 = root1.left,
+            root2 = root2.right
+        ) && checkIfSymmetricHelper(root1 = root1.right, root2 = root2.left)
+
     }
 }
