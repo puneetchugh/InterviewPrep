@@ -69,6 +69,7 @@ object BST {
         fixBSTWrapper()
         buildHuffmanTreeWrapper()
         checkIfSymmetric()
+        boundaryTraversal()
     }
 
     fun sampleBST(): Node {
@@ -1306,6 +1307,51 @@ object BST {
             root1 = root1.left,
             root2 = root2.right
         ) && checkIfSymmetricHelper(root1 = root1.right, root2 = root2.left)
+    }
+
+    fun boundaryTraversal() {
+        val root = sampleBSTSymmetric()
+        boundaryTraversalLeftView(root = root)
+        boundaryTraversalLeafNodes(root = root)
+        boundaryTraversalRightNodes(root = root)
+    }
+
+    fun boundaryTraversalLeftView(root: Node?) {
+        if (root == null || (root.left == null && root.right == null)) {
+            return
+        }
+
+        Log.e(LOG_TAG, "Inside boundaryTraversalLeftView(), root: ${root.data}")
+        if (root.left != null) {
+            boundaryTraversalLeftView(root.left)
+        } else {
+            boundaryTraversalLeftView(root.right)
+        }
+    }
+
+    fun boundaryTraversalLeafNodes(root: Node?) {
+        if (root == null) {
+            return
+        } else if (root.left == null && root.right == null) {
+            Log.e(LOG_TAG, "Inside boundaryTraversalLeafNodes(), root: ${root.data}")
+            return
+        }
+        boundaryTraversalLeafNodes(root.left)
+        boundaryTraversalLeafNodes(root.right)
+    }
+
+    fun boundaryTraversalRightNodes(root: Node?) {
+        if (root == null || (root.left == null && root.right == null)) {
+            return
+        }
+        if (root.right != null) {
+            boundaryTraversalRightNodes(root.right)
+        } else {
+            boundaryTraversalRightNodes(root.left)
+        }
+
+        Log.e(LOG_TAG, "Inside boundaryTraversalRightNodes(), root: ${root.data}")
 
     }
+
 }
