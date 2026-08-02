@@ -70,6 +70,7 @@ object BST {
         buildHuffmanTreeWrapper()
         checkIfSymmetric()
         boundaryTraversal()
+        findNodesAncestors()
     }
 
     fun sampleBST(): Node {
@@ -1351,7 +1352,45 @@ object BST {
         }
 
         Log.e(LOG_TAG, "Inside boundaryTraversalRightNodes(), root: ${root.data}")
+    }
 
+    fun findNodesAncestors() {
+        val root = sampleBST()
+        val mutableList = mutableListOf<Int>()
+        val data = 22
+        val foundNode =
+            findNodesAncestorsHelper(root = root, mutableList = mutableList, data = data)
+        Log.e(
+            LOG_TAG,
+            "Inside findNodesAncestors(), foundNode: $foundNode, mutableList: $mutableList"
+        )
+    }
+
+    fun findNodesAncestorsHelper(root: Node?, mutableList: MutableList<Int>, data: Int): Boolean {
+        if (root == null) {
+            return false
+        }
+
+        if (root.data == data) {
+            return true
+        } else if (data < root.data && findNodesAncestorsHelper(
+                root = root.left,
+                mutableList = mutableList,
+                data = data
+            )
+        ) {
+            mutableList.add(root.data)
+        } else if (data > root.data && findNodesAncestorsHelper(
+                root = root.right,
+                mutableList = mutableList,
+                data = data
+            )
+        ) {
+            mutableList.add(root.data)
+        } else {
+            return false
+        }
+        return true
     }
 
 }
