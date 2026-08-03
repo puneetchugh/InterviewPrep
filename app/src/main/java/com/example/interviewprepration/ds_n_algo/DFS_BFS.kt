@@ -31,6 +31,7 @@ object DFS_BFS {
         replaceZerosSurroundedByOnes()
         replaceZerosNotSurroundedByOnes()
         nQueensWrapper(size = 5)
+        countIslands()
     }
 
     // longest path
@@ -330,10 +331,10 @@ object DFS_BFS {
                 inputMatrix[row][columnCounter] = 'Q'
                 val retVal = nQueens(inputMatrix = inputMatrix, row = row + 1)
                 //if (!retVal) {
-                    inputMatrix[row][columnCounter] = '.'
-               // } else {
-                 //   return true
-               // }
+                inputMatrix[row][columnCounter] = '.'
+                // } else {
+                //   return true
+                // }
             }
         }
         return false
@@ -371,6 +372,69 @@ object DFS_BFS {
             rowCounter--
         }
         return true
+    }
+
+    // count number of islands and largest island
+    fun countIslands() {
+        val matrix = arrayOf(
+            intArrayOf(1, 0, 1, 0, 0, 0, 1, 1, 1, 1),
+            intArrayOf(0, 0, 1, 0, 1, 0, 1, 0, 0, 0),
+            intArrayOf(1, 1, 1, 1, 0, 0, 1, 0, 0, 0),
+            intArrayOf(1, 0, 0, 1, 0, 1, 0, 0, 0, 0),
+            intArrayOf(1, 1, 1, 1, 0, 0, 0, 1, 1, 1),
+            intArrayOf(0, 1, 0, 1, 0, 0, 1, 1, 1, 1),
+            intArrayOf(0, 0, 0, 0, 0, 1, 1, 1, 0, 0),
+            intArrayOf(0, 0, 0, 1, 0, 0, 1, 1, 1, 0),
+            intArrayOf(1, 0, 1, 0, 1, 0, 0, 1, 0, 0),
+            intArrayOf(1, 1, 1, 1, 0, 0, 0, 1, 1, 1)
+        )
+        val visited = Array(10) { BooleanArray(10) { false } }
+        var totalIslands = 0
+        var largestIsland = 0
+        for (row in matrix.indices) {
+            for (col in matrix[row].indices) {
+                if (matrix[row][col] == 1 && !visited[row][col]) {
+                    totalIslands++
+                    largestIsland =
+                        max(countIslandsHelper(matrix, row, col, visited), largestIsland)
+                }
+            }
+        }
+        Log.e(
+            LOG_TAG,
+            "Inside countIslands(), totalIslands: $totalIslands, largestIsland: $largestIsland"
+        )
+    }
+
+    fun countIslandsHelper(
+        matrix: Array<IntArray>,
+        row: Int,
+        col: Int,
+        visited: Array<BooleanArray>
+    ): Int {
+        val points = arrayOf(
+            Pair(-1, -1),
+            Pair(-1, 0),
+            Pair(-1, 1),
+            Pair(0, -1),
+            Pair(0, 1),
+            Pair(1, -1),
+            Pair(1, 0),
+            Pair(1, 1)
+        )
+        var count = 1
+        Log.e(LOG_TAG, "Inside countIslandsHelper(), row: $row, col: $col")
+        visited[row][col] = true
+        for (point in points) {
+            if (isSafe(matrix, row + point.first, col + point.second, visited)) {
+                count += countIslandsHelper(matrix, row + point.first, col + point.second, visited)
+            }
+        }
+        return count
+    }
+
+    fun isSafe(matrix: Array<IntArray>, row: Int, col: Int, visited: Array<BooleanArray>): Boolean {
+        return row >= 0 && col >= 0 && row < matrix.size && col < matrix[0].size && matrix[row][col] == 1 && !visited[row][col]
     }
 
 }
