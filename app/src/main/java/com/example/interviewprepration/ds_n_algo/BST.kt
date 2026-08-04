@@ -71,6 +71,7 @@ object BST {
         checkIfSymmetric()
         boundaryTraversal()
         findNodesAncestors()
+        printReverseLevelOrder()
     }
 
     fun sampleBST(): Node {
@@ -1393,4 +1394,37 @@ object BST {
         return true
     }
 
+    fun printReverseLevelOrder() {
+        val root = sampleBST()
+
+        val queue = ArrayDeque<Node>()
+        queue.add(root)
+        printReverseLevelOrderHelper(queue = queue)
+    }
+
+    fun printReverseLevelOrderHelper(queue: ArrayDeque<Node>) {
+
+        if (queue.isEmpty()) {
+            return
+        }
+        var nodesCount = queue.size
+        val levelNodesList = mutableListOf<Int>()
+        while (nodesCount > 0) {
+            val current = queue.removeLast()
+            levelNodesList.add(current.data)
+            Log.e(LOG_TAG, "Inside printReverseLevelOrderHelper(), visiting: ${current.data}")
+            if (current.left != null) {
+                queue.addFirst(current.left!!)
+            }
+            if (current.right != null) {
+                queue.addFirst(current.right!!)
+            }
+            nodesCount--
+        }
+        printReverseLevelOrderHelper(queue = queue)
+        Log.e(
+            LOG_TAG,
+            "Inside printReverseLevelOrderHelper(), levelNodesList: ${levelNodesList.joinToString()}"
+        )
+    }
 }
