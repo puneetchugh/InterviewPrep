@@ -72,6 +72,7 @@ object BST {
         boundaryTraversal()
         findNodesAncestors()
         printReverseLevelOrder()
+        printDiagonals()
     }
 
     fun sampleBST(): Node {
@@ -97,6 +98,31 @@ object BST {
         nodeC.right = nodeG
 
         nodeD.right = nodeF
+        return root
+    }
+
+    fun sampleBSTForDiagonal(): Node {
+        val root = Node(data = 20)
+        val nodeA = Node(data = 10)
+        val nodeB = Node(data = 32)
+        val nodeC = Node(data = 25)
+        val nodeD = Node(data = 15)
+        val nodeE = Node(data = 50)
+        val nodeF = Node(data = 18)
+        val nodeG = Node(data = 30)
+        val nodeH = Node(data = 22)
+
+        root.left = nodeA
+        root.right = nodeB
+
+        nodeB.right = nodeE
+        nodeB.left = nodeD
+
+        nodeA.left = nodeC
+
+        nodeD.left = nodeF
+        nodeD.right = nodeG
+
         return root
     }
 
@@ -1426,5 +1452,62 @@ object BST {
             LOG_TAG,
             "Inside printReverseLevelOrderHelper(), levelNodesList: ${levelNodesList.joinToString()}"
         )
+    }
+
+    //Print diagonal traversal of a binary tree
+    //Given a binary tree, print all nodes for each diagonal having negative slope (\).
+    // Assume that the left and right child of a node makes a 45–degree angle with the parent.
+    fun printDiagonals() {
+        val root = sampleBSTForDiagonal()
+        printDiagonalsHelper(root = root)
+    }
+
+    fun printDiagonalsHelper(root: Node?) {
+        if (root == null) {
+            return
+        }
+
+        val sentinelNode = Node(-1)
+        val queue = ArrayDeque<Node>()
+        queue.add(sentinelNode)
+
+        var currentRoot = root
+
+        while (currentRoot != null) {
+            Log.e(
+                LOG_TAG,
+                "Inside printDiagonals() while loop adding right nodes to queue, visiting: ${currentRoot.data}"
+            )
+            queue.add(currentRoot)
+            currentRoot = currentRoot.right
+        }
+
+        val currentList = mutableListOf<Node>()
+        while (queue.isNotEmpty()) {
+            val current = queue.removeFirst()
+            Log.e(LOG_TAG, "Inside printDiagonals(), visiting: ${current.data}")
+
+            if (current != sentinelNode) {
+                currentList.add(current)
+                if (current.left != null) {
+                    var nodeToBeQueued: Node? = current.left
+                    while (nodeToBeQueued != null) {
+                        queue.add(nodeToBeQueued)
+                        nodeToBeQueued = nodeToBeQueued.right
+                    }
+                }
+            } else {
+                queue.isNotEmpty().takeIf { it }?.let {
+                    queue.add(sentinelNode)
+                }
+                Log.e(
+                    LOG_TAG,
+                    "Inside printDiagonals(), printing diagonal: ${
+                        currentList.map { it.data }.joinToString()
+                    }"
+                )
+                currentList.clear()
+            }
+        }
     }
 }
