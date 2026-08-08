@@ -34,6 +34,7 @@ object Intervals {
                 "Interval: ${interval.name}, start: ${interval.start}, end: ${interval.end}"
             )
         }
+        checkIfPersonCanAttendAllMeetings()
     }
 
     data class Interval(var name: String? = null, var start: Int, var end: Int)
@@ -59,5 +60,45 @@ object Intervals {
             }
         }
         return output.toList()
+    }
+
+    // check if a person can attend all the meetings
+
+    fun inputMeetings1(): Array<Interval> {
+        return arrayOf(
+            Interval(name = "Interval", start = 0, end = 3),
+            Interval(name = "Interval", start = 4, end = 8),
+            Interval(name = "Interval", start = 10, end = 15),
+            Interval(name = "Interval", start = 12, end = 18),
+            Interval(name = "Interval", start = 20, end = 25)
+        )
+    }
+
+    fun inputMeetings2(): Array<Interval> {
+        return arrayOf(
+            Interval(name = "Interval", start = 0, end = 3),
+            Interval(name = "Interval", start = 4, end = 8),
+            Interval(name = "Interval", start = 10, end = 15),
+            Interval(name = "Interval", start = 20, end = 25)
+        )
+    }
+
+    fun checkIfPersonCanAttendAllMeetings() {
+        val input1 = inputMeetings1()
+        val input2 = inputMeetings2()
+
+        Log.e(LOG_TAG, "checkIfPersonCanAttendAllMeetings() for input1: ${checkIfOverlap(input1)}")
+        Log.e(LOG_TAG, "checkIfPersonCanAttendAllMeetings() for input2: ${checkIfOverlap(input2)}")
+    }
+
+    fun checkIfOverlap(meetings: Array<Interval>): Boolean {
+        val sortedMeetings = meetings.sortedBy { it.start }
+
+        for (counter in 0 until sortedMeetings.size - 1) {
+            if (sortedMeetings[counter].end > sortedMeetings[counter + 1].start) {
+                return false
+            }
+        }
+        return true
     }
 }
