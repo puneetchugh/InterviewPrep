@@ -73,6 +73,7 @@ object BST {
         findNodesAncestors()
         printReverseLevelOrder()
         printDiagonals()
+        printVerticalBST()
     }
 
     fun sampleBST(): Node {
@@ -1509,5 +1510,35 @@ object BST {
                 currentList.clear()
             }
         }
+    }
+
+    fun printVerticalBST() {
+        val root = sampleBST()
+        val mapWithHorizontalDistKey = mutableMapOf<Int, MutableList<Int>>()
+        printVerticalBSTHelper(root = root, map = mapWithHorizontalDistKey, hd = 0, height = 0)
+
+        mapWithHorizontalDistKey.forEach { key, value ->
+            Log.e(
+                LOG_TAG,
+                "Inside printVerticalBST(), Horizontal Distance: $key, value: ${value.joinToString()}"
+            )
+        }
+    }
+
+    fun printVerticalBSTHelper(
+        root: Node?,
+        map: MutableMap<Int, MutableList<Int>>,
+        hd: Int,
+        height: Int
+    ) {
+        if (root == null) {
+            return
+        }
+
+        map[hd]?.add(root.data) ?: run {
+            map[hd] = mutableListOf(root.data)
+        }
+        printVerticalBSTHelper(root = root.left, map = map, hd = hd - 1, height = height + 1)
+        printVerticalBSTHelper(root = root.right, map = map, hd = hd + 1, height = height + 1)
     }
 }
