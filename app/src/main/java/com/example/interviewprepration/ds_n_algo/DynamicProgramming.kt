@@ -23,6 +23,7 @@ object DynamicProgramming {
         Log.e(LOG_TAG, "Inside driverFunction, lcs1 for $text21 and $text22: $lcs2")
 
         knapSack()
+        coinChange()
     }
 
     // min number of coins to make a target sum
@@ -93,12 +94,21 @@ object DynamicProgramming {
         )
     }
 
-    fun knapSackHelper(values: IntArray, weights: IntArray, remaining: Int, index: Int, includedPairs: List<Pair<Int, Int>>): Int {
+    fun knapSackHelper(
+        values: IntArray,
+        weights: IntArray,
+        remaining: Int,
+        index: Int,
+        includedPairs: List<Pair<Int, Int>>
+    ): Int {
         if (remaining < 0) {
             return Int.MIN_VALUE
         }
         if (index >= values.size || remaining == 0) {
-            Log.e(LOG_TAG, "Inside knapSackHelper(), total value: ${includedPairs.sumOf { it.first }}, includedPairs: ${includedPairs.joinToString()}")
+            Log.e(
+                LOG_TAG,
+                "Inside knapSackHelper(), total value: ${includedPairs.sumOf { it.first }}, includedPairs: ${includedPairs.joinToString()}"
+            )
             return 0
         }
 
@@ -118,5 +128,53 @@ object DynamicProgramming {
             includedPairs = includedPairs
         )
         return max(including, excluding)
+    }
+
+    fun coinChange() {
+
+        val coins = intArrayOf(1, 2, 3)
+        val target = 4
+        val map = mutableMapOf<String, Int>()
+        val output = coinChangeHelper(coins = coins, amount = target, index = 0, map = map)
+        Log.e(LOG_TAG, "Inside coinChange(), input: ${coins.contentToString()}, target: $target, output: $output")
+
+        val coins1 = intArrayOf(1, 3, 5, 7)
+        val target1 = 8
+        val map1 = mutableMapOf<String, Int>()
+        val output1 = coinChangeHelper(coins = coins1, amount = target1, index = 0, map = map1)
+        Log.e(LOG_TAG, "Inside coinChange(), input: ${coins1.contentToString()}, target: $target1, output1: $output1")
+    }
+
+    fun coinChangeHelper(
+        coins: IntArray,
+        amount: Int,
+        index: Int,
+        map: MutableMap<String, Int>
+    ): Int {
+        if (amount == 0) {
+            return 1
+        }
+
+        if (index >= coins.size || amount < 0) {
+            return 0
+        }
+
+        val key = "$index|$amount"
+        if (!map.contains(key)) {
+            val include = coinChangeHelper(
+                coins = coins,
+                amount = amount - coins[index],
+                index = index,
+                map = map
+            )
+            val exclude = coinChangeHelper(
+                coins = coins,
+                amount = amount,
+                index = index + 1,
+                map = map
+            )
+            map[key] = include + exclude
+        }
+        return map[key]!!
     }
 }
