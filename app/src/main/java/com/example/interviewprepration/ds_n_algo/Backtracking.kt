@@ -14,6 +14,7 @@ object Backtracking {
 
         wordBreakProblem()
         balanceParenthesis()
+        subsetWithEqualSum()
     }
 
     /*****************************************************
@@ -195,7 +196,10 @@ object Backtracking {
             list = list1,
             output = ""
         )
-        Log.e(LOG_TAG, "Inside balanceParenthesis(), input1: $input1, list1: ${list1.joinToString()}")
+        Log.e(
+            LOG_TAG,
+            "Inside balanceParenthesis(), input1: $input1, list1: ${list1.joinToString()}"
+        )
 
         val max1 = list1.maxBy { it.length }.length
         Log.e(
@@ -215,7 +219,10 @@ object Backtracking {
             list = list2,
             output = ""
         )
-        Log.e(LOG_TAG, "Inside balanceParenthesis(), input2: $input2, list1: ${list2.joinToString()}")
+        Log.e(
+            LOG_TAG,
+            "Inside balanceParenthesis(), input2: $input2, list1: ${list2.joinToString()}"
+        )
         val max2 = list2.maxBy { it.length }.length
         Log.e(
             LOG_TAG,
@@ -305,5 +312,44 @@ object Backtracking {
                 list = list
             )
         }
+    }
+
+    // Partition Problem using Dynamic Programming
+    fun subsetWithEqualSum() {
+        Log.e(LOG_TAG, "Inside subsetWithEqualSum()")
+        val input1 = intArrayOf(7, 3, 1, 5, 4, 8)
+        val isSumEven1 = input1.sum().rem(2) == 0
+        val target1 = input1.sum() / 2
+        val output1 = subset(input = input1, target = target1, index = 0)
+        Log.e(
+            LOG_TAG,
+            "Inside subsetWithEqualSum(), for input one equal partition exists ? ${isSumEven1 && output1}"
+        )
+
+        val input2 = intArrayOf(7, 3, 1, 5, 4, 7)
+        val isSumEven2 = input2.sum().rem(2) == 0
+        val target2 = input2.sum() / 2
+        val output2 = subset(input = input2, target = target2, index = 0)
+        Log.e(
+            LOG_TAG,
+            "Inside subsetWithEqualSum(), for input one equal partition exists ? ${isSumEven2 && output2}"
+        )
+    }
+
+    fun subset(input: IntArray, target: Int, index: Int): Boolean {
+        if (target == 0) {
+            return true
+        }
+
+
+        if (index >= input.size || target < 0) {
+            return false
+        }
+
+        val included = subset(input = input, target = target - input[index], index + 1)
+        if (included) {
+            return true
+        }
+        return subset(input = input, target = target, index + 1)
     }
 }
